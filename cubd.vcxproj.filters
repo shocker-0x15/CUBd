@@ -9,4 +9,7 @@
   <ItemGroup>
     <CudaCompile Include="cubd.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
 </Project>
