@@ -68,12 +68,13 @@ namespace cubd {
     cudaError_t DeviceRadixSort::SortPairs(DEVICE_RADIX_SORT_SORT_PAIRS_ARGUMENTS(KeyT, ValueT)) {
         cub::DoubleBuffer<KeyT> cub_d_keys(d_keys.Current(), d_keys.Alternate());
         cub::DoubleBuffer<ValueT> cub_d_values(d_values.Current(), d_values.Alternate());
-        return cub::DeviceRadixSort::SortPairs(d_temp_storage, temp_storage_bytes,
-                                               cub_d_keys, cub_d_values, num_items,
-                                               begin_bit, end_bit,
-                                               stream, debug_synchronous);
+        cudaError_t res = cub::DeviceRadixSort::SortPairs(d_temp_storage, temp_storage_bytes,
+                                                          cub_d_keys, cub_d_values, num_items,
+                                                          begin_bit, end_bit,
+                                                          stream, debug_synchronous);
         d_keys.selector = cub_d_keys.Current() == d_keys.Alternate();
         d_values.selector = cub_d_values.Current() == d_values.Alternate();
+        return res;
     }
 
     // JP: RadixSortの値には任意の型が使用可能。

@@ -27,7 +27,6 @@ namespace cubd {
 
         T* Current() { return d_buffers[selector]; }
         T* Alternate() { return d_buffers[selector ^ 1]; }
-
     };
 
     struct DeviceReduce {

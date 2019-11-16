@@ -52,8 +52,8 @@ constexpr uint32_t NumTests = 10;
 static bool test_sum_int32_t() {
     std::uniform_int_distribution<int32_t> dist(-100, 100);
 
-    constexpr uint32_t MaxNumElements = 10000;
-    int32_t valuesOnHost[MaxNumElements];
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new int32_t[MaxNumElements];
 
     int32_t* valuesOnDevice;
     cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(int32_t));
@@ -107,14 +107,16 @@ static bool test_sum_int32_t() {
     cudaFree(sumOnDevice);
     cudaFree(valuesOnDevice);
 
+    delete[] valuesOnHost;
+
     return allSuccess;
 }
 
 static bool test_sum_uint32_t() {
     std::uniform_int_distribution<uint32_t> dist(0, 100);
 
-    constexpr uint32_t MaxNumElements = 10000;
-    int32_t valuesOnHost[MaxNumElements];
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new uint32_t[MaxNumElements];
 
     uint32_t* valuesOnDevice;
     cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(uint32_t));
@@ -168,14 +170,16 @@ static bool test_sum_uint32_t() {
     cudaFree(sumOnDevice);
     cudaFree(valuesOnDevice);
 
+    delete[] valuesOnHost;
+
     return allSuccess;
 }
 
 static bool test_sum_float() {
     std::uniform_real_distribution<float> dist(0, 1);
 
-    constexpr uint32_t MaxNumElements = 10000;
-    float valuesOnHost[MaxNumElements];
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new float[MaxNumElements];
 
     float* valuesOnDevice;
     cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(float));
@@ -231,22 +235,24 @@ static bool test_sum_float() {
     cudaFree(sumOnDevice);
     cudaFree(valuesOnDevice);
 
+    delete[] valuesOnHost;
+
     return allSuccess;
 }
 
 static bool test_exclusive_scan_int32_t() {
     std::uniform_int_distribution<int32_t> dist(-100, 100);
 
-    constexpr uint32_t MaxNumElements = 10000;
-    int32_t valuesOnHost[MaxNumElements];
-    int32_t refPrefixSums[MaxNumElements];
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new int32_t[MaxNumElements];
+    auto refPrefixSums = new int32_t[MaxNumElements];
 
     int32_t* valuesOnDevice;
     cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(int32_t));
 
     int32_t* prefixSumsOnDevice;
     cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(int32_t));
-    int32_t prefixSumsOnHost[MaxNumElements];
+    auto prefixSumsOnHost = new int32_t[MaxNumElements];
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -295,8 +301,13 @@ static bool test_exclusive_scan_int32_t() {
     printf("\n");
 
     cudaFree(tempStorage);
+
+    delete[] prefixSumsOnHost;
     cudaFree(prefixSumsOnDevice);
     cudaFree(valuesOnDevice);
+
+    delete[] refPrefixSums;
+    delete[] valuesOnHost;
 
     return allSuccess;
 }
@@ -304,16 +315,16 @@ static bool test_exclusive_scan_int32_t() {
 static bool test_exclusive_scan_uint32_t() {
     std::uniform_int_distribution<uint32_t> dist(0, 100);
 
-    constexpr uint32_t MaxNumElements = 10000;
-    uint32_t valuesOnHost[MaxNumElements];
-    uint32_t refPrefixSums[MaxNumElements];
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new uint32_t[MaxNumElements];
+    auto refPrefixSums = new uint32_t[MaxNumElements];
 
     uint32_t* valuesOnDevice;
     cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(uint32_t));
 
     uint32_t* prefixSumsOnDevice;
     cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(uint32_t));
-    uint32_t prefixSumsOnHost[MaxNumElements];
+    auto prefixSumsOnHost = new uint32_t[MaxNumElements];
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -362,8 +373,13 @@ static bool test_exclusive_scan_uint32_t() {
     printf("\n");
 
     cudaFree(tempStorage);
+
+    delete[] prefixSumsOnHost;
     cudaFree(prefixSumsOnDevice);
     cudaFree(valuesOnDevice);
+
+    delete[] refPrefixSums;
+    delete[] valuesOnHost;
 
     return allSuccess;
 }
@@ -371,16 +387,16 @@ static bool test_exclusive_scan_uint32_t() {
 static bool test_exclusive_scan_float() {
     std::uniform_real_distribution<float> dist(0, 1);
 
-    constexpr uint32_t MaxNumElements = 10000;
-    float valuesOnHost[MaxNumElements];
-    float refPrefixSums[MaxNumElements];
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new float[MaxNumElements];
+    auto refPrefixSums = new float[MaxNumElements];
 
     float* valuesOnDevice;
     cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(float));
 
     float* prefixSumsOnDevice;
     cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(float));
-    float prefixSumsOnHost[MaxNumElements];
+    auto prefixSumsOnHost = new float[MaxNumElements];
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -433,8 +449,13 @@ static bool test_exclusive_scan_float() {
     printf("\n");
 
     cudaFree(tempStorage);
+
+    delete[] prefixSumsOnHost;
     cudaFree(prefixSumsOnDevice);
     cudaFree(valuesOnDevice);
+
+    delete[] refPrefixSums;
+    delete[] valuesOnHost;
 
     return allSuccess;
 }
@@ -442,10 +463,10 @@ static bool test_exclusive_scan_float() {
 static bool test_radix_sort_uint64_t_key_uint32_t_value() {
     std::uniform_int_distribution<uint64_t> dist(0, 59237535202341);
 
-    constexpr uint32_t MaxNumElements = 10000;
-    uint64_t keysOnHost[MaxNumElements];
-    uint32_t valuesOnHost[MaxNumElements];
-    std::pair<uint64_t, uint32_t> refKeyValuePairsOnHost[MaxNumElements];
+    constexpr uint32_t MaxNumElements = 100000;
+    auto keysOnHost = new uint64_t[MaxNumElements];
+    auto valuesOnHost = new uint32_t[MaxNumElements];
+    auto refKeyValuePairsOnHost = new std::pair<uint64_t, uint32_t>[MaxNumElements];
 
     uint64_t* keysOnDeviceA;
     uint64_t* keysOnDeviceB;
@@ -458,8 +479,8 @@ static bool test_radix_sort_uint64_t_key_uint32_t_value() {
 
     cubd::DoubleBuffer<uint64_t> keysOnDevice(keysOnDeviceA, keysOnDeviceB);
     cubd::DoubleBuffer<uint32_t> valuesOnDevice(valuesOnDeviceA, valuesOnDeviceB);
-    uint64_t sortedKeysOnHost[MaxNumElements];
-    uint32_t sortedValuesOnHost[MaxNumElements];
+    auto sortedKeysOnHost = new uint64_t[MaxNumElements];
+    auto sortedValuesOnHost = new uint32_t[MaxNumElements];
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -512,11 +533,18 @@ static bool test_radix_sort_uint64_t_key_uint32_t_value() {
     }
     printf("\n");
 
+    delete[] sortedValuesOnHost;
+    delete[] sortedKeysOnHost;
+
     cudaFree(tempStorage);
     cudaFree(valuesOnDeviceB);
     cudaFree(valuesOnDeviceA);
     cudaFree(keysOnDeviceB);
     cudaFree(keysOnDeviceA);
+
+    delete[] refKeyValuePairsOnHost;
+    delete[] valuesOnHost;
+    delete[]  keysOnHost;
 
     return allSuccess;
 }
