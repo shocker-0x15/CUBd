@@ -72,8 +72,10 @@ namespace cubd {
     template <typename InputIteratorT, typename OutputIteratorT>
     cudaError_t DEVICE_REDUCE_ARGMIN_SIGNATURE(InputIteratorT, OutputIteratorT) {
         typedef typename std::iterator_traits<OutputIteratorT>::value_type OutputValueType;
-        typedef typename cub::KeyValuePair<typename OutputValueType::Key, typename OutputValueType::Value> cubPairType;
-        cubPairType* cub_d_out = reinterpret_cast<cubPairType*>(d_out);
+        typedef typename cub::KeyValuePair<typename OutputValueType::Key, typename OutputValueType::Value> CubPairType;
+        static_assert(sizeof(OutputValueType) == sizeof(CubPairType),
+                      "Sizes of KeyValuePair: Not match");
+        CubPairType* cub_d_out = reinterpret_cast<CubPairType*>(d_out);
         return cub::DeviceReduce::ArgMin(d_temp_storage, temp_storage_bytes,
                                          d_in, cub_d_out, num_items,
                                          stream, debug_synchronous);
@@ -162,14 +164,17 @@ namespace cubd {
     
     template <typename KeyT, typename ValueT>
     cudaError_t DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(KeyT, ValueT) {
-        cub::DoubleBuffer<KeyT> cub_d_keys(d_keys.Current(), d_keys.Alternate());
-        cub::DoubleBuffer<ValueT> cub_d_values(d_values.Current(), d_values.Alternate());
+        static_assert(sizeof(cubd::DoubleBuffer<KeyT>) == sizeof(cub::DoubleBuffer<KeyT>) &&
+                      sizeof(cubd::DoubleBuffer<ValueT>) == sizeof(cub::DoubleBuffer<ValueT>),
+                      "Sizes of DoubleBuffer: Not match");
+        cub::DoubleBuffer<KeyT> cub_d_keys = *reinterpret_cast<cub::DoubleBuffer<KeyT>*>(&d_keys);
+        cub::DoubleBuffer<ValueT> cub_d_values = *reinterpret_cast<cub::DoubleBuffer<ValueT>*>(&d_values);
         cudaError_t res = cub::DeviceRadixSort::SortPairs(d_temp_storage, temp_storage_bytes,
                                                           cub_d_keys, cub_d_values, num_items,
                                                           begin_bit, end_bit,
                                                           stream, debug_synchronous);
-        d_keys.selector = cub_d_keys.Current() == d_keys.Alternate();
-        d_values.selector = cub_d_values.Current() == d_values.Alternate();
+        d_keys = *reinterpret_cast<cubd::DoubleBuffer<KeyT>*>(&cub_d_keys);
+        d_values = *reinterpret_cast<cubd::DoubleBuffer<ValueT>*>(&cub_d_values);
         return res;
     }
 
