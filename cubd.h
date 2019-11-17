@@ -9,6 +9,17 @@
 //     files including this header as ordinary C++ code.
 
 namespace cubd {
+    template <typename _Key, typename _Value>
+    struct KeyValuePair {
+        typedef _Key Key;
+        typedef _Value Value;
+
+        Key key;
+        Value value;
+    };
+
+
+
     template <typename T>
     struct DoubleBuffer {
         T* d_buffers[2];
@@ -29,12 +40,36 @@ namespace cubd {
         T* Alternate() { return d_buffers[selector ^ 1]; }
     };
 
+
+
     struct DeviceReduce {
         template <typename InputIteratorT, typename OutputIteratorT>
         static cudaError_t Sum(void* d_temp_storage, size_t &temp_storage_bytes,
                                InputIteratorT d_in, OutputIteratorT d_out, int num_items,
                                cudaStream_t stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT>
+        static cudaError_t Min(void* d_temp_storage, size_t &temp_storage_bytes,
+                               InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                               cudaStream_t stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT>
+        static cudaError_t ArgMin(void* d_temp_storage, size_t &temp_storage_bytes,
+                                  InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                                  cudaStream_t stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT>
+        static cudaError_t Max(void* d_temp_storage, size_t &temp_storage_bytes,
+                               InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                               cudaStream_t stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT>
+        static cudaError_t ArgMax(void* d_temp_storage, size_t &temp_storage_bytes,
+                                  InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                                  cudaStream_t stream = 0, bool debug_synchronous = false);
     };
+
+
 
     struct DeviceScan {
         template <typename InputIteratorT, typename OutputIteratorT>
@@ -42,6 +77,8 @@ namespace cubd {
                                         InputIteratorT d_in, OutputIteratorT d_out, int num_items,
                                         cudaStream_t stream = 0, bool debug_synchronous = false);
     };
+
+
 
     struct DeviceRadixSort {
         template <typename KeyT, typename ValueT>

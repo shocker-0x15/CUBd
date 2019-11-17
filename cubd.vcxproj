@@ -143,6 +143,8 @@
     <CudaCompile Include="cubd.cpp">
       <NvccCompilation Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">compile</NvccCompilation>
       <NvccCompilation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">compile</NvccCompilation>
+      <AdditionalCompilerOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/wd 4819</AdditionalCompilerOptions>
+      <AdditionalCompilerOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/wd 4819</AdditionalCompilerOptions>
     </CudaCompile>
     <ClCompile Include="main.cpp" />
   </ItemGroup>

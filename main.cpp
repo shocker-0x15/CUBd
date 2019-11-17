@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <random>
+#include <limits>
 
 #include "cubd.h"
 
@@ -11,6 +12,18 @@
 static bool test_sum_int32_t();
 static bool test_sum_uint32_t();
 static bool test_sum_float();
+static bool test_min_int32_t();
+static bool test_min_uint32_t();
+static bool test_min_float();
+static bool test_max_int32_t();
+static bool test_max_uint32_t();
+static bool test_max_float();
+static bool test_argmin_int32_t();
+static bool test_argmin_uint32_t();
+static bool test_argmin_float();
+static bool test_argmax_int32_t();
+static bool test_argmax_uint32_t();
+static bool test_argmax_float();
 static bool test_exclusive_scan_int32_t();
 static bool test_exclusive_scan_uint32_t();
 static bool test_exclusive_scan_float();
@@ -28,6 +41,22 @@ int32_t main(int32_t argc, const char* argv[]) {
     success &= test_sum_int32_t();
     success &= test_sum_uint32_t();
     success &= test_sum_float();
+
+    success &= test_min_int32_t();
+    success &= test_min_uint32_t();
+    success &= test_min_float();
+
+    success &= test_max_int32_t();
+    success &= test_max_uint32_t();
+    success &= test_max_float();
+
+    success &= test_argmin_int32_t();
+    success &= test_argmin_uint32_t();
+    success &= test_argmin_float();
+
+    success &= test_argmax_int32_t();
+    success &= test_argmax_uint32_t();
+    success &= test_argmax_float();
 
     success &= test_exclusive_scan_int32_t();
     success &= test_exclusive_scan_uint32_t();
@@ -50,16 +79,18 @@ std::mt19937_64 rng(194712984);
 constexpr uint32_t NumTests = 10;
 
 static bool test_sum_int32_t() {
-    std::uniform_int_distribution<int32_t> dist(-100, 100);
+    using ValueType = int32_t;
+
+    std::uniform_int_distribution<ValueType> dist(-100, 100);
 
     constexpr uint32_t MaxNumElements = 100000;
-    auto valuesOnHost = new int32_t[MaxNumElements];
+    auto valuesOnHost = new ValueType[MaxNumElements];
 
-    int32_t* valuesOnDevice;
-    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(int32_t));
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
 
-    int32_t* sumOnDevice;
-    cudaMalloc(&sumOnDevice, sizeof(int32_t));
+    ValueType* sumOnDevice;
+    cudaMalloc(&sumOnDevice, sizeof(ValueType));
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -78,23 +109,23 @@ static bool test_sum_int32_t() {
         // JP: 値のセットとリファレンスとしての答えの計算。
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
-        int32_t refSum = 0;
+        ValueType refSum = 0;
         for (int i = 0; i < numElements; ++i) {
-            int32_t value = dist(rng);
+            ValueType value = dist(rng);
             valuesOnHost[i] = value;
             refSum += value;
         }
-        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(int32_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        cudaMemset(sumOnDevice, 0, sizeof(int32_t));
+        cudaMemset(sumOnDevice, 0, sizeof(ValueType));
 
         // JP: リダクションの実行。
         // EN: perform reduction.
         cubd::DeviceReduce::Sum(tempStorage, tempStorageSize,
                                 valuesOnDevice, sumOnDevice, numElements);
 
-        int32_t sumOnHost;
-        cudaMemcpy(&sumOnHost, sumOnDevice, sizeof(int32_t), cudaMemcpyDeviceToHost);
+        ValueType sumOnHost;
+        cudaMemcpy(&sumOnHost, sumOnDevice, sizeof(ValueType), cudaMemcpyDeviceToHost);
 
         printf("  N:%5u, %8d (ref: %8d)%s\n", numElements, sumOnHost, refSum,
                sumOnHost == refSum ? "" : " NG");
@@ -113,16 +144,18 @@ static bool test_sum_int32_t() {
 }
 
 static bool test_sum_uint32_t() {
-    std::uniform_int_distribution<uint32_t> dist(0, 100);
+    using ValueType = uint32_t;
+
+    std::uniform_int_distribution<ValueType> dist(0, 100);
 
     constexpr uint32_t MaxNumElements = 100000;
-    auto valuesOnHost = new uint32_t[MaxNumElements];
+    auto valuesOnHost = new ValueType[MaxNumElements];
 
-    uint32_t* valuesOnDevice;
-    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(uint32_t));
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
 
-    uint32_t* sumOnDevice;
-    cudaMalloc(&sumOnDevice, sizeof(uint32_t));
+    ValueType* sumOnDevice;
+    cudaMalloc(&sumOnDevice, sizeof(ValueType));
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -141,23 +174,23 @@ static bool test_sum_uint32_t() {
         // JP: 値のセットとリファレンスとしての答えの計算。
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
-        uint32_t refSum = 0;
+        ValueType refSum = 0;
         for (int i = 0; i < numElements; ++i) {
-            uint32_t value = dist(rng);
+            ValueType value = dist(rng);
             valuesOnHost[i] = value;
             refSum += value;
         }
-        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(uint32_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        cudaMemset(sumOnDevice, 0, sizeof(uint32_t));
+        cudaMemset(sumOnDevice, 0, sizeof(ValueType));
 
         // JP: リダクションの実行。
         // EN: perform reduction.
         cubd::DeviceReduce::Sum(tempStorage, tempStorageSize,
                                 valuesOnDevice, sumOnDevice, numElements);
 
-        uint32_t sumOnHost;
-        cudaMemcpy(&sumOnHost, sumOnDevice, sizeof(uint32_t), cudaMemcpyDeviceToHost);
+        ValueType sumOnHost;
+        cudaMemcpy(&sumOnHost, sumOnDevice, sizeof(ValueType), cudaMemcpyDeviceToHost);
 
         printf("  N:%5u, %8u (ref: %8u)%s\n", numElements, sumOnHost, refSum,
                sumOnHost == refSum ? "" : " NG");
@@ -176,16 +209,18 @@ static bool test_sum_uint32_t() {
 }
 
 static bool test_sum_float() {
-    std::uniform_real_distribution<float> dist(0, 1);
+    using ValueType = float;
+
+    std::uniform_real_distribution<ValueType> dist(0, 1);
 
     constexpr uint32_t MaxNumElements = 100000;
-    auto valuesOnHost = new float[MaxNumElements];
+    auto valuesOnHost = new ValueType[MaxNumElements];
 
-    float* valuesOnDevice;
-    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(float));
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
 
-    float* sumOnDevice;
-    cudaMalloc(&sumOnDevice, sizeof(float));
+    ValueType* sumOnDevice;
+    cudaMalloc(&sumOnDevice, sizeof(ValueType));
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -206,23 +241,23 @@ static bool test_sum_float() {
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         double refSum = 0;
         for (int i = 0; i < numElements; ++i) {
-            float value = dist(rng);
+            ValueType value = dist(rng);
             valuesOnHost[i] = value;
             refSum += value;
         }
-        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(float), cudaMemcpyHostToDevice);
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        cudaMemset(sumOnDevice, 0, sizeof(float));
+        cudaMemset(sumOnDevice, 0, sizeof(ValueType));
 
         // JP: リダクションの実行。
         // EN: perform reduction.
         cubd::DeviceReduce::Sum(tempStorage, tempStorageSize,
                                 valuesOnDevice, sumOnDevice, numElements);
 
-        float sumOnHost;
-        cudaMemcpy(&sumOnHost, sumOnDevice, sizeof(float), cudaMemcpyDeviceToHost);
+        ValueType sumOnHost;
+        cudaMemcpy(&sumOnHost, sumOnDevice, sizeof(ValueType), cudaMemcpyDeviceToHost);
 
-        float error = (sumOnHost - refSum) / refSum;
+        ValueType error = (sumOnHost - refSum) / refSum;
         bool success = std::fabs(error) < 0.001f;
         printf("  N: %5u, %g (ref: %g), error: %.2f%%%s\n", numElements, sumOnHost, refSum, error * 100,
                success ? "" : " NG");
@@ -240,19 +275,837 @@ static bool test_sum_float() {
     return allSuccess;
 }
 
-static bool test_exclusive_scan_int32_t() {
-    std::uniform_int_distribution<int32_t> dist(-100, 100);
+static bool test_min_int32_t() {
+    using ValueType = int32_t;
+
+    std::uniform_int_distribution<ValueType> dist(-1000000, 1000000);
 
     constexpr uint32_t MaxNumElements = 100000;
-    auto valuesOnHost = new int32_t[MaxNumElements];
-    auto refPrefixSums = new int32_t[MaxNumElements];
+    auto valuesOnHost = new ValueType[MaxNumElements];
 
-    int32_t* valuesOnDevice;
-    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(int32_t));
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
 
-    int32_t* prefixSumsOnDevice;
-    cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(int32_t));
-    auto prefixSumsOnHost = new int32_t[MaxNumElements];
+    ValueType* minOnDevice;
+    cudaMalloc(&minOnDevice, sizeof(ValueType));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::Sum(nullptr, tempStorageSize,
+                            valuesOnDevice, minOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::Min, int32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        ValueType refMin = std::numeric_limits<ValueType>::max();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            refMin = std::min(refMin, value);
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(minOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::Min(tempStorage, tempStorageSize,
+                                valuesOnDevice, minOnDevice, numElements);
+
+        ValueType minOnHost;
+        cudaMemcpy(&minOnHost, minOnDevice, sizeof(ValueType), cudaMemcpyDeviceToHost);
+
+        printf("  N:%5u, %8d (ref: %8d)%s\n", numElements, minOnHost, refMin,
+               minOnHost == refMin ? "" : " NG");
+
+        allSuccess &= minOnHost == refMin;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(minOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_min_uint32_t() {
+    using ValueType = uint32_t;
+
+    std::uniform_int_distribution<ValueType> dist(0, 1000000);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    ValueType* minOnDevice;
+    cudaMalloc(&minOnDevice, sizeof(ValueType));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::Min(nullptr, tempStorageSize,
+                            valuesOnDevice, minOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::Min, uint32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        ValueType refMin = std::numeric_limits<ValueType>::max();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            refMin = std::min(refMin, value);
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(minOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::Min(tempStorage, tempStorageSize,
+                                valuesOnDevice, minOnDevice, numElements);
+
+        ValueType minOnHost;
+        cudaMemcpy(&minOnHost, minOnDevice, sizeof(ValueType), cudaMemcpyDeviceToHost);
+
+        printf("  N:%5u, %8u (ref: %8u)%s\n", numElements, minOnHost, refMin,
+               minOnHost == refMin ? "" : " NG");
+
+        allSuccess &= minOnHost == refMin;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(minOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_min_float() {
+    using ValueType = float;
+
+    std::uniform_real_distribution<ValueType> dist(0, 1);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    ValueType* minOnDevice;
+    cudaMalloc(&minOnDevice, sizeof(ValueType));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::Min(nullptr, tempStorageSize,
+                            valuesOnDevice, minOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::Min, float:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        ValueType refMin = std::numeric_limits<ValueType>::max();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            refMin = std::min(refMin, value);
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(minOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::Min(tempStorage, tempStorageSize,
+                                valuesOnDevice, minOnDevice, numElements);
+
+        ValueType minOnHost;
+        cudaMemcpy(&minOnHost, minOnDevice, sizeof(ValueType), cudaMemcpyDeviceToHost);
+
+        printf("  N: %5u, %g (ref: %g)%s\n", numElements, minOnHost, refMin,
+               minOnHost == refMin ? "" : " NG");
+
+        allSuccess &= minOnHost == refMin;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(minOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_max_int32_t() {
+    using ValueType = int32_t;
+
+    std::uniform_int_distribution<ValueType> dist(-1000000, 1000000);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    ValueType* maxOnDevice;
+    cudaMalloc(&maxOnDevice, sizeof(ValueType));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::Max(nullptr, tempStorageSize,
+                            valuesOnDevice, maxOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::Max, int32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        ValueType refMax = std::numeric_limits<ValueType>::min();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            refMax = std::max(refMax, value);
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(maxOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::Max(tempStorage, tempStorageSize,
+                                valuesOnDevice, maxOnDevice, numElements);
+
+        ValueType maxOnHost;
+        cudaMemcpy(&maxOnHost, maxOnDevice, sizeof(ValueType), cudaMemcpyDeviceToHost);
+
+        printf("  N:%5u, %8d (ref: %8d)%s\n", numElements, maxOnHost, refMax,
+               maxOnHost == refMax ? "" : " NG");
+
+        allSuccess &= maxOnHost == refMax;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(maxOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_max_uint32_t() {
+    using ValueType = uint32_t;
+
+    std::uniform_int_distribution<ValueType> dist(0, 1000000);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    ValueType* maxOnDevice;
+    cudaMalloc(&maxOnDevice, sizeof(ValueType));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::Max(nullptr, tempStorageSize,
+                            valuesOnDevice, maxOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::Max, uint32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        ValueType refMax = std::numeric_limits<ValueType>::min();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            refMax = std::max(refMax, value);
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(maxOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::Max(tempStorage, tempStorageSize,
+                                valuesOnDevice, maxOnDevice, numElements);
+
+        ValueType maxOnHost;
+        cudaMemcpy(&maxOnHost, maxOnDevice, sizeof(ValueType), cudaMemcpyDeviceToHost);
+
+        printf("  N:%5u, %8u (ref: %8u)%s\n", numElements, maxOnHost, refMax,
+               maxOnHost == refMax ? "" : " NG");
+
+        allSuccess &= maxOnHost == refMax;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(maxOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_max_float() {
+    using ValueType = float;
+
+    std::uniform_real_distribution<ValueType> dist(0, 1);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    ValueType* maxOnDevice;
+    cudaMalloc(&maxOnDevice, sizeof(ValueType));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::Max(nullptr, tempStorageSize,
+                            valuesOnDevice, maxOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::Max, float:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        ValueType refMax = std::numeric_limits<ValueType>::min();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            refMax = std::max(refMax, value);
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(maxOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::Max(tempStorage, tempStorageSize,
+                                valuesOnDevice, maxOnDevice, numElements);
+
+        ValueType maxOnHost;
+        cudaMemcpy(&maxOnHost, maxOnDevice, sizeof(ValueType), cudaMemcpyDeviceToHost);
+
+        printf("  N: %5u, %g (ref: %g)%s\n", numElements, maxOnHost, refMax,
+               maxOnHost == refMax ? "" : " NG");
+
+        allSuccess &= maxOnHost == refMax;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(maxOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_argmin_int32_t() {
+    using ValueType = int32_t;
+
+    std::uniform_int_distribution<ValueType> dist(-1000000, 1000000);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    cubd::KeyValuePair<int32_t, ValueType>* minOnDevice;
+    cudaMalloc(&minOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::ArgMin(nullptr, tempStorageSize,
+                               valuesOnDevice, minOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::ArgMin, int32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        int32_t refIdx = -1;
+        ValueType refMin = std::numeric_limits<ValueType>::max();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            if (value < refMin) {
+                refIdx = i;
+                refMin = value;
+            }
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(minOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::ArgMin(tempStorage, tempStorageSize,
+                                   valuesOnDevice, minOnDevice, numElements);
+
+        cubd::KeyValuePair<int32_t, ValueType> minOnHost;
+        cudaMemcpy(&minOnHost, minOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>), cudaMemcpyDeviceToHost);
+
+        bool success = minOnHost.key == refIdx && minOnHost.value == refMin;
+        printf("  N:%5u, %8d at %6d (ref: %8d at %6d)%s\n", numElements,
+               minOnHost.value, minOnHost.key, refMin, refIdx,
+               success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(minOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_argmin_uint32_t() {
+    using ValueType = uint32_t;
+
+    std::uniform_int_distribution<ValueType> dist(0, 1000000);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    cubd::KeyValuePair<int32_t, ValueType>* minOnDevice;
+    cudaMalloc(&minOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::ArgMin(nullptr, tempStorageSize,
+                               valuesOnDevice, minOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::ArgMin, uint32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        int32_t refIdx = -1;
+        ValueType refMin = std::numeric_limits<ValueType>::max();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            if (value < refMin) {
+                refIdx = i;
+                refMin = value;
+            }
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(minOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::ArgMin(tempStorage, tempStorageSize,
+                                   valuesOnDevice, minOnDevice, numElements);
+
+        cubd::KeyValuePair<int32_t, ValueType> minOnHost;
+        cudaMemcpy(&minOnHost, minOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>), cudaMemcpyDeviceToHost);
+
+        bool success = minOnHost.key == refIdx && minOnHost.value == refMin;
+        printf("  N:%5u, %8u at %6d (ref: %8u at %6d)%s\n", numElements,
+               minOnHost.value, minOnHost.key, refMin, refIdx,
+               success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(minOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_argmin_float() {
+    using ValueType = float;
+
+    std::uniform_real_distribution<ValueType> dist(0, 1);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    cubd::KeyValuePair<int32_t, ValueType>* minOnDevice;
+    cudaMalloc(&minOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::ArgMin(nullptr, tempStorageSize,
+                               valuesOnDevice, minOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::ArgMin, float:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        int32_t refIdx = -1;
+        ValueType refMin = std::numeric_limits<ValueType>::max();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            if (value < refMin) {
+                refIdx = i;
+                refMin = value;
+            }
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(minOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::ArgMin(tempStorage, tempStorageSize,
+                                   valuesOnDevice, minOnDevice, numElements);
+
+        cubd::KeyValuePair<int32_t, ValueType> minOnHost;
+        cudaMemcpy(&minOnHost, minOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>), cudaMemcpyDeviceToHost);
+
+        bool success = minOnHost.key == refIdx && minOnHost.value == refMin;
+        printf("  N:%5u, %g at %6d (ref: %g at %6d)%s\n", numElements,
+               minOnHost.value, minOnHost.key, refMin, refIdx,
+               success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(minOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_argmax_int32_t() {
+    using ValueType = int32_t;
+
+    std::uniform_int_distribution<ValueType> dist(-1000000, 1000000);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    cubd::KeyValuePair<int32_t, ValueType>* maxOnDevice;
+    cudaMalloc(&maxOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::ArgMax(nullptr, tempStorageSize,
+                               valuesOnDevice, maxOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::ArgMax, int32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        int32_t refIdx = -1;
+        ValueType refMax = std::numeric_limits<ValueType>::min();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            if (value > refMax) {
+                refIdx = i;
+                refMax = value;
+            }
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(maxOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::ArgMax(tempStorage, tempStorageSize,
+                                   valuesOnDevice, maxOnDevice, numElements);
+
+        cubd::KeyValuePair<int32_t, ValueType> maxOnHost;
+        cudaMemcpy(&maxOnHost, maxOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>), cudaMemcpyDeviceToHost);
+
+        bool success = maxOnHost.key == refIdx && maxOnHost.value == refMax;
+        printf("  N:%5u, %8d at %6d (ref: %8d at %6d)%s\n", numElements,
+               maxOnHost.value, maxOnHost.key, refMax, refIdx,
+               success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(maxOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_argmax_uint32_t() {
+    using ValueType = uint32_t;
+
+    std::uniform_int_distribution<ValueType> dist(0, 1000000);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    cubd::KeyValuePair<int32_t, ValueType>* maxOnDevice;
+    cudaMalloc(&maxOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::ArgMax(nullptr, tempStorageSize,
+                               valuesOnDevice, maxOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::ArgMax, uint32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        int32_t refIdx = -1;
+        ValueType refMax = std::numeric_limits<ValueType>::min();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            if (value > refMax) {
+                refIdx = i;
+                refMax = value;
+            }
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(maxOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::ArgMax(tempStorage, tempStorageSize,
+                                   valuesOnDevice, maxOnDevice, numElements);
+
+        cubd::KeyValuePair<int32_t, ValueType> maxOnHost;
+        cudaMemcpy(&maxOnHost, maxOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>), cudaMemcpyDeviceToHost);
+
+        bool success = maxOnHost.key == refIdx && maxOnHost.value == refMax;
+        printf("  N:%5u, %8u at %6d (ref: %8u at %6d)%s\n", numElements,
+               maxOnHost.value, maxOnHost.key, refMax, refIdx,
+               success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(maxOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_argmax_float() {
+    using ValueType = float;
+
+    std::uniform_real_distribution<ValueType> dist(0, 1);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    cubd::KeyValuePair<int32_t, ValueType>* maxOnDevice;
+    cudaMalloc(&maxOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceReduce::ArgMax(nullptr, tempStorageSize,
+                               valuesOnDevice, maxOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceReduce::ArgMax, float:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        int32_t refIdx = -1;
+        ValueType refMax = std::numeric_limits<ValueType>::min();
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            valuesOnHost[i] = value;
+            if (value > refMax) {
+                refIdx = i;
+                refMax = value;
+            }
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        cudaMemset(maxOnDevice, 0, sizeof(ValueType));
+
+        // JP: リダクションの実行。
+        // EN: perform reduction.
+        cubd::DeviceReduce::ArgMax(tempStorage, tempStorageSize,
+                                   valuesOnDevice, maxOnDevice, numElements);
+
+        cubd::KeyValuePair<int32_t, ValueType> maxOnHost;
+        cudaMemcpy(&maxOnHost, maxOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>), cudaMemcpyDeviceToHost);
+
+        bool success = maxOnHost.key == refIdx && maxOnHost.value == refMax;
+        printf("  N:%5u, %g at %6d (ref: %g at %6d)%s\n", numElements,
+               maxOnHost.value, maxOnHost.key, refMax, refIdx,
+               success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+    cudaFree(maxOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_exclusive_scan_int32_t() {
+    using ValueType = int32_t;
+
+    std::uniform_int_distribution<ValueType> dist(-100, 100);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+    auto refPrefixSums = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    ValueType* prefixSumsOnDevice;
+    cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
+    auto prefixSumsOnHost = new ValueType[MaxNumElements];
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -271,21 +1124,21 @@ static bool test_exclusive_scan_int32_t() {
         // JP: 値のセットとリファレンスとしての答えの計算。
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
-        int32_t sum = 0;
+        ValueType sum = 0;
         for (int i = 0; i < numElements; ++i) {
-            int32_t value = dist(rng);
+            ValueType value = dist(rng);
             valuesOnHost[i] = value;
             refPrefixSums[i] = sum;
             sum += value;
         }
-        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(int32_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
         // JP: スキャンの実行。
         // EN: perform scan.
         cubd::DeviceScan::ExclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
 
-        cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(int32_t) * numElements, cudaMemcpyDeviceToHost);
+        cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(ValueType) * numElements, cudaMemcpyDeviceToHost);
 
         bool success = true;
         for (int i = 0; i < numElements; ++i) {
@@ -313,18 +1166,20 @@ static bool test_exclusive_scan_int32_t() {
 }
 
 static bool test_exclusive_scan_uint32_t() {
-    std::uniform_int_distribution<uint32_t> dist(0, 100);
+    using ValueType = uint32_t;
+
+    std::uniform_int_distribution<ValueType> dist(0, 100);
 
     constexpr uint32_t MaxNumElements = 100000;
-    auto valuesOnHost = new uint32_t[MaxNumElements];
-    auto refPrefixSums = new uint32_t[MaxNumElements];
+    auto valuesOnHost = new ValueType[MaxNumElements];
+    auto refPrefixSums = new ValueType[MaxNumElements];
 
-    uint32_t* valuesOnDevice;
-    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(uint32_t));
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
 
-    uint32_t* prefixSumsOnDevice;
-    cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(uint32_t));
-    auto prefixSumsOnHost = new uint32_t[MaxNumElements];
+    ValueType* prefixSumsOnDevice;
+    cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
+    auto prefixSumsOnHost = new ValueType[MaxNumElements];
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -343,21 +1198,21 @@ static bool test_exclusive_scan_uint32_t() {
         // JP: 値のセットとリファレンスとしての答えの計算。
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
-        uint32_t sum = 0;
+        ValueType sum = 0;
         for (int i = 0; i < numElements; ++i) {
-            uint32_t value = dist(rng);
+            ValueType value = dist(rng);
             valuesOnHost[i] = value;
             refPrefixSums[i] = sum;
             sum += value;
         }
-        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(uint32_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
         // JP: スキャンの実行。
         // EN: perform scan.
         cubd::DeviceScan::ExclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
 
-        cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(uint32_t) * numElements, cudaMemcpyDeviceToHost);
+        cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(ValueType) * numElements, cudaMemcpyDeviceToHost);
 
         bool success = true;
         for (int i = 0; i < numElements; ++i) {
@@ -385,18 +1240,20 @@ static bool test_exclusive_scan_uint32_t() {
 }
 
 static bool test_exclusive_scan_float() {
-    std::uniform_real_distribution<float> dist(0, 1);
+    using ValueType = float;
+
+    std::uniform_real_distribution<ValueType> dist(0, 1);
 
     constexpr uint32_t MaxNumElements = 100000;
-    auto valuesOnHost = new float[MaxNumElements];
-    auto refPrefixSums = new float[MaxNumElements];
+    auto valuesOnHost = new ValueType[MaxNumElements];
+    auto refPrefixSums = new ValueType[MaxNumElements];
 
-    float* valuesOnDevice;
-    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(float));
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
 
-    float* prefixSumsOnDevice;
-    cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(float));
-    auto prefixSumsOnHost = new float[MaxNumElements];
+    ValueType* prefixSumsOnDevice;
+    cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
+    auto prefixSumsOnHost = new ValueType[MaxNumElements];
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -417,23 +1274,23 @@ static bool test_exclusive_scan_float() {
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         double sum = 0;
         for (int i = 0; i < numElements; ++i) {
-            float value = dist(rng);
+            ValueType value = dist(rng);
             valuesOnHost[i] = value;
             refPrefixSums[i] = sum;
             sum += value;
         }
-        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(float), cudaMemcpyHostToDevice);
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
         // JP: スキャンの実行。
         // EN: perform scan.
         cubd::DeviceScan::ExclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
 
-        cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(float) * numElements, cudaMemcpyDeviceToHost);
+        cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(ValueType) * numElements, cudaMemcpyDeviceToHost);
 
         bool success = true;
         for (int i = 0; i < numElements; ++i) {
-            float error = (prefixSumsOnHost[i] - refPrefixSums[i]) / refPrefixSums[i];
+            ValueType error = (prefixSumsOnHost[i] - refPrefixSums[i]) / refPrefixSums[i];
             if (refPrefixSums[i] != 0)
                 success &= std::fabs(error) < 0.001f;
             else
@@ -461,26 +1318,29 @@ static bool test_exclusive_scan_float() {
 }
 
 static bool test_radix_sort_uint64_t_key_uint32_t_value() {
-    std::uniform_int_distribution<uint64_t> dist(0, 59237535202341);
+    using KeyType = uint64_t;
+    using ValueType = uint32_t;
+
+    std::uniform_int_distribution<KeyType> dist(0, 59237535202341);
 
     constexpr uint32_t MaxNumElements = 100000;
-    auto keysOnHost = new uint64_t[MaxNumElements];
-    auto valuesOnHost = new uint32_t[MaxNumElements];
-    auto refKeyValuePairsOnHost = new std::pair<uint64_t, uint32_t>[MaxNumElements];
+    auto keysOnHost = new KeyType[MaxNumElements];
+    auto valuesOnHost = new ValueType[MaxNumElements];
+    auto refKeyValuePairsOnHost = new std::pair<KeyType, ValueType>[MaxNumElements];
 
-    uint64_t* keysOnDeviceA;
-    uint64_t* keysOnDeviceB;
-    uint32_t* valuesOnDeviceA;
-    uint32_t* valuesOnDeviceB;
-    cudaMalloc(&keysOnDeviceA, MaxNumElements * sizeof(uint64_t));
-    cudaMalloc(&keysOnDeviceB, MaxNumElements * sizeof(uint64_t));
-    cudaMalloc(&valuesOnDeviceA, MaxNumElements * sizeof(uint32_t));
-    cudaMalloc(&valuesOnDeviceB, MaxNumElements * sizeof(uint32_t));
+    KeyType* keysOnDeviceA;
+    KeyType* keysOnDeviceB;
+    ValueType* valuesOnDeviceA;
+    ValueType* valuesOnDeviceB;
+    cudaMalloc(&keysOnDeviceA, MaxNumElements * sizeof(KeyType));
+    cudaMalloc(&keysOnDeviceB, MaxNumElements * sizeof(KeyType));
+    cudaMalloc(&valuesOnDeviceA, MaxNumElements * sizeof(ValueType));
+    cudaMalloc(&valuesOnDeviceB, MaxNumElements * sizeof(ValueType));
 
-    cubd::DoubleBuffer<uint64_t> keysOnDevice(keysOnDeviceA, keysOnDeviceB);
-    cubd::DoubleBuffer<uint32_t> valuesOnDevice(valuesOnDeviceA, valuesOnDeviceB);
-    auto sortedKeysOnHost = new uint64_t[MaxNumElements];
-    auto sortedValuesOnHost = new uint32_t[MaxNumElements];
+    cubd::DoubleBuffer<KeyType> keysOnDevice(keysOnDeviceA, keysOnDeviceB);
+    cubd::DoubleBuffer<ValueType> valuesOnDevice(valuesOnDeviceA, valuesOnDeviceB);
+    auto sortedKeysOnHost = new KeyType[MaxNumElements];
+    auto sortedValuesOnHost = new ValueType[MaxNumElements];
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
@@ -500,29 +1360,29 @@ static bool test_radix_sort_uint64_t_key_uint32_t_value() {
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         for (int i = 0; i < numElements; ++i) {
-            uint64_t key = dist(rng);
+            KeyType key = dist(rng);
             keysOnHost[i] = key;
             valuesOnHost[i] = i;
             refKeyValuePairsOnHost[i] = std::make_pair(key, i);
         }
         std::stable_sort(refKeyValuePairsOnHost, refKeyValuePairsOnHost + numElements,
-                         [](const std::pair<uint64_t, uint32_t> &pairA, const std::pair<uint64_t, uint32_t> &pairB) {
+                         [](const std::pair<KeyType, ValueType> &pairA, const std::pair<KeyType, ValueType> &pairB) {
                              return pairA.first < pairB.first;
                          });
-        cudaMemcpy(keysOnDevice.Current(), keysOnHost, numElements * sizeof(uint64_t), cudaMemcpyHostToDevice);
-        cudaMemcpy(valuesOnDevice.Current(), valuesOnHost, numElements * sizeof(uint32_t), cudaMemcpyHostToDevice);
+        cudaMemcpy(keysOnDevice.Current(), keysOnHost, numElements * sizeof(KeyType), cudaMemcpyHostToDevice);
+        cudaMemcpy(valuesOnDevice.Current(), valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
         // JP: ソートの実行。
         // EN: perform sort.
         cubd::DeviceRadixSort::SortPairs(tempStorage, tempStorageSize,
                                          keysOnDevice, valuesOnDevice, numElements);
 
-        cudaMemcpy(sortedKeysOnHost, keysOnDevice.Current(), sizeof(uint64_t) * numElements, cudaMemcpyDeviceToHost);
-        cudaMemcpy(sortedValuesOnHost, valuesOnDevice.Current(), sizeof(uint32_t) * numElements, cudaMemcpyDeviceToHost);
+        cudaMemcpy(sortedKeysOnHost, keysOnDevice.Current(), sizeof(KeyType) * numElements, cudaMemcpyDeviceToHost);
+        cudaMemcpy(sortedValuesOnHost, valuesOnDevice.Current(), sizeof(ValueType) * numElements, cudaMemcpyDeviceToHost);
 
         bool success = true;
         for (int i = 0; i < numElements; ++i) {
-            const std::pair<uint64_t, uint32_t> refPair = refKeyValuePairsOnHost[i];
+            const std::pair<KeyType, ValueType> refPair = refKeyValuePairsOnHost[i];
             success &= sortedKeysOnHost[i] == refPair.first && sortedValuesOnHost[i] == refPair.second;
             if (!success)
                 break;
