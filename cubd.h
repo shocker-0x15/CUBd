@@ -76,6 +76,11 @@ namespace cubd {
         static cudaError_t ExclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes,
                                         InputIteratorT d_in, OutputIteratorT d_out, int num_items,
                                         cudaStream_t stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT>
+        static cudaError_t InclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes,
+                                        InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                                        cudaStream_t stream = 0, bool debug_synchronous = false);
     };
 
 

@@ -156,6 +156,27 @@ namespace cubd {
 
 
 
+#define DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) \
+    DeviceScan::InclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes, \
+                             InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
+                             cudaStream_t stream, bool debug_synchronous)
+
+    template <typename InputIteratorT, typename OutputIteratorT>
+    cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) {
+        return cub::DeviceScan::InclusiveSum(d_temp_storage, temp_storage_bytes,
+                                             d_in, d_out, num_items,
+                                             stream, debug_synchronous);
+    }
+
+    template cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(int32_t*, int32_t*);
+    template cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const int32_t*, int32_t*);
+    template cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(uint32_t*, uint32_t*);
+    template cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
+    template cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(float*, float*);
+    template cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const float*, float*);
+
+
+
 #define DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(KeyT, ValueT) \
     DeviceRadixSort::SortPairs(void* d_temp_storage, size_t &temp_storage_bytes, \
                                DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items, \

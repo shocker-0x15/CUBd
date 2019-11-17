@@ -24,9 +24,12 @@ static bool test_argmin_float();
 static bool test_argmax_int32_t();
 static bool test_argmax_uint32_t();
 static bool test_argmax_float();
-static bool test_exclusive_scan_int32_t();
-static bool test_exclusive_scan_uint32_t();
-static bool test_exclusive_scan_float();
+static bool test_exclusive_sum_int32_t();
+static bool test_exclusive_sum_uint32_t();
+static bool test_exclusive_sum_float();
+static bool test_inclusive_sum_int32_t();
+static bool test_inclusive_sum_uint32_t();
+static bool test_inclusive_sum_float();
 static bool test_radix_sort_uint64_t_key_uint32_t_value();
 
 int32_t main(int32_t argc, const char* argv[]) {
@@ -58,9 +61,13 @@ int32_t main(int32_t argc, const char* argv[]) {
     success &= test_argmax_uint32_t();
     success &= test_argmax_float();
 
-    success &= test_exclusive_scan_int32_t();
-    success &= test_exclusive_scan_uint32_t();
-    success &= test_exclusive_scan_float();
+    success &= test_exclusive_sum_int32_t();
+    success &= test_exclusive_sum_uint32_t();
+    success &= test_exclusive_sum_float();
+
+    success &= test_inclusive_sum_int32_t();
+    success &= test_inclusive_sum_uint32_t();
+    success &= test_inclusive_sum_float();
 
     success &= test_radix_sort_uint64_t_key_uint32_t_value();
 
@@ -1091,7 +1098,7 @@ static bool test_argmax_float() {
     return allSuccess;
 }
 
-static bool test_exclusive_scan_int32_t() {
+static bool test_exclusive_sum_int32_t() {
     using ValueType = int32_t;
 
     std::uniform_int_distribution<ValueType> dist(-100, 100);
@@ -1165,7 +1172,7 @@ static bool test_exclusive_scan_int32_t() {
     return allSuccess;
 }
 
-static bool test_exclusive_scan_uint32_t() {
+static bool test_exclusive_sum_uint32_t() {
     using ValueType = uint32_t;
 
     std::uniform_int_distribution<ValueType> dist(0, 100);
@@ -1239,7 +1246,7 @@ static bool test_exclusive_scan_uint32_t() {
     return allSuccess;
 }
 
-static bool test_exclusive_scan_float() {
+static bool test_exclusive_sum_float() {
     using ValueType = float;
 
     std::uniform_real_distribution<ValueType> dist(0, 1);
@@ -1284,6 +1291,232 @@ static bool test_exclusive_scan_float() {
         // JP: スキャンの実行。
         // EN: perform scan.
         cubd::DeviceScan::ExclusiveSum(tempStorage, tempStorageSize,
+                                       valuesOnDevice, prefixSumsOnDevice, numElements);
+
+        cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(ValueType) * numElements, cudaMemcpyDeviceToHost);
+
+        bool success = true;
+        for (int i = 0; i < numElements; ++i) {
+            ValueType error = (prefixSumsOnHost[i] - refPrefixSums[i]) / refPrefixSums[i];
+            if (refPrefixSums[i] != 0)
+                success &= std::fabs(error) < 0.001f;
+            else
+                ;
+            if (!success)
+                break;
+        }
+        printf("  N:%5u, value at the end: %g (ref: %g)%s\n", numElements, prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+               success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+
+    delete[] prefixSumsOnHost;
+    cudaFree(prefixSumsOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] refPrefixSums;
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_inclusive_sum_int32_t() {
+    using ValueType = int32_t;
+
+    std::uniform_int_distribution<ValueType> dist(-100, 100);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+    auto refPrefixSums = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    ValueType* prefixSumsOnDevice;
+    cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
+    auto prefixSumsOnHost = new ValueType[MaxNumElements];
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceScan::InclusiveSum(nullptr, tempStorageSize,
+                                   valuesOnDevice, prefixSumsOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceScan::InclusiveSum, int32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        ValueType sum = 0;
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            sum += value;
+            valuesOnHost[i] = value;
+            refPrefixSums[i] = sum;
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        // JP: スキャンの実行。
+        // EN: perform scan.
+        cubd::DeviceScan::InclusiveSum(tempStorage, tempStorageSize,
+                                       valuesOnDevice, prefixSumsOnDevice, numElements);
+
+        cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(ValueType) * numElements, cudaMemcpyDeviceToHost);
+
+        bool success = true;
+        for (int i = 0; i < numElements; ++i) {
+            success &= prefixSumsOnHost[i] == refPrefixSums[i];
+            if (!success)
+                break;
+        }
+        printf("  N:%5u, value at the end: %8d (ref: %8d)%s\n", numElements, prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+               success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+
+    delete[] prefixSumsOnHost;
+    cudaFree(prefixSumsOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] refPrefixSums;
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_inclusive_sum_uint32_t() {
+    using ValueType = uint32_t;
+
+    std::uniform_int_distribution<ValueType> dist(0, 100);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+    auto refPrefixSums = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    ValueType* prefixSumsOnDevice;
+    cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
+    auto prefixSumsOnHost = new ValueType[MaxNumElements];
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceScan::InclusiveSum(nullptr, tempStorageSize,
+                                   valuesOnDevice, prefixSumsOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceScan::InclusiveSum, uint32_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        ValueType sum = 0;
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            sum += value;
+            valuesOnHost[i] = value;
+            refPrefixSums[i] = sum;
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        // JP: スキャンの実行。
+        // EN: perform scan.
+        cubd::DeviceScan::InclusiveSum(tempStorage, tempStorageSize,
+                                       valuesOnDevice, prefixSumsOnDevice, numElements);
+
+        cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(ValueType) * numElements, cudaMemcpyDeviceToHost);
+
+        bool success = true;
+        for (int i = 0; i < numElements; ++i) {
+            success &= prefixSumsOnHost[i] == refPrefixSums[i];
+            if (!success)
+                break;
+        }
+        printf("  N:%5u, value at the end: %8u (ref: %8u)%s\n", numElements, prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+               success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    cudaFree(tempStorage);
+
+    delete[] prefixSumsOnHost;
+    cudaFree(prefixSumsOnDevice);
+    cudaFree(valuesOnDevice);
+
+    delete[] refPrefixSums;
+    delete[] valuesOnHost;
+
+    return allSuccess;
+}
+
+static bool test_inclusive_sum_float() {
+    using ValueType = float;
+
+    std::uniform_real_distribution<ValueType> dist(0, 1);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto valuesOnHost = new ValueType[MaxNumElements];
+    auto refPrefixSums = new ValueType[MaxNumElements];
+
+    ValueType* valuesOnDevice;
+    cudaMalloc(&valuesOnDevice, MaxNumElements * sizeof(ValueType));
+
+    ValueType* prefixSumsOnDevice;
+    cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
+    auto prefixSumsOnHost = new ValueType[MaxNumElements];
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceScan::InclusiveSum(nullptr, tempStorageSize,
+                                   valuesOnDevice, prefixSumsOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceScan::InclusiveSum, float:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        double sum = 0;
+        for (int i = 0; i < numElements; ++i) {
+            ValueType value = dist(rng);
+            sum += value;
+            valuesOnHost[i] = value;
+            refPrefixSums[i] = sum;
+        }
+        cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
+
+        // JP: スキャンの実行。
+        // EN: perform scan.
+        cubd::DeviceScan::InclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
 
         cudaMemcpy(prefixSumsOnHost, prefixSumsOnDevice, sizeof(ValueType) * numElements, cudaMemcpyDeviceToHost);
