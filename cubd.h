@@ -91,5 +91,11 @@ namespace cubd {
                                      DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items,
                                      int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
                                      cudaStream_t stream = 0, bool debug_synchronous = false);
+
+        template <typename KeyT>
+        static cudaError_t SortKeys(void* d_temp_storage, size_t &temp_storage_bytes,
+                                    DoubleBuffer<KeyT> &d_keys, int num_items,
+                                    int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+                                    cudaStream_t stream = 0, bool debug_synchronous = false);
     };
 }

@@ -202,4 +202,27 @@ namespace cubd {
     // JP: RadixSortの値には任意の型が使用可能。
     // EN: Value can be an arbitrary type.
     template cudaError_t DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(uint64_t, uint32_t);
+
+
+
+#define DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(KeyT) \
+    DeviceRadixSort::SortKeys(void* d_temp_storage, size_t &temp_storage_bytes, \
+                              DoubleBuffer<KeyT> &d_keys, int num_items, \
+                              int begin_bit, int end_bit, \
+                              cudaStream_t stream, bool debug_synchronous)
+
+    template <typename KeyT>
+    cudaError_t DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(KeyT) {
+        static_assert(sizeof(cubd::DoubleBuffer<KeyT>) == sizeof(cub::DoubleBuffer<KeyT>),
+                      "Sizes of DoubleBuffer: Not match");
+        cub::DoubleBuffer<KeyT> cub_d_keys = *reinterpret_cast<cub::DoubleBuffer<KeyT>*>(&d_keys);
+        cudaError_t res = cub::DeviceRadixSort::SortKeys(d_temp_storage, temp_storage_bytes,
+                                                         cub_d_keys, num_items,
+                                                         begin_bit, end_bit,
+                                                         stream, debug_synchronous);
+        d_keys = *reinterpret_cast<cubd::DoubleBuffer<KeyT>*>(&cub_d_keys);
+        return res;
+    }
+
+    template cudaError_t DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(uint64_t);
 }

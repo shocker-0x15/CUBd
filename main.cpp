@@ -31,6 +31,7 @@ static bool test_inclusive_sum_int32_t();
 static bool test_inclusive_sum_uint32_t();
 static bool test_inclusive_sum_float();
 static bool test_radix_sort_uint64_t_key_uint32_t_value();
+static bool test_radix_sort_uint64_t_key();
 
 int32_t main(int32_t argc, const char* argv[]) {
     cudaError_t err;
@@ -70,6 +71,8 @@ int32_t main(int32_t argc, const char* argv[]) {
     success &= test_inclusive_sum_float();
 
     success &= test_radix_sort_uint64_t_key_uint32_t_value();
+
+    success &= test_radix_sort_uint64_t_key();
 
     if (success)
         printf("All Success!\n");
@@ -1637,6 +1640,76 @@ static bool test_radix_sort_uint64_t_key_uint32_t_value() {
 
     delete[] refKeyValuePairsOnHost;
     delete[] valuesOnHost;
+    delete[]  keysOnHost;
+
+    return allSuccess;
+}
+
+static bool test_radix_sort_uint64_t_key() {
+    using KeyType = uint64_t;
+
+    std::uniform_int_distribution<KeyType> dist(0, 59237535202341);
+
+    constexpr uint32_t MaxNumElements = 100000;
+    auto keysOnHost = new KeyType[MaxNumElements];
+
+    KeyType* keysOnDeviceA;
+    KeyType* keysOnDeviceB;
+    cudaMalloc(&keysOnDeviceA, MaxNumElements * sizeof(KeyType));
+    cudaMalloc(&keysOnDeviceB, MaxNumElements * sizeof(KeyType));
+
+    cubd::DoubleBuffer<KeyType> keysOnDevice(keysOnDeviceA, keysOnDeviceB);
+    auto sortedKeysOnHost = new KeyType[MaxNumElements];
+
+    // JP: 作業バッファーの最大サイズを得る。
+    // EN: query the maximum size of working buffer.
+    size_t tempStorageSize;
+    cubd::DeviceRadixSort::SortKeys(nullptr, tempStorageSize,
+                                    keysOnDevice, MaxNumElements);
+
+    // JP: 作業バッファーの確保。
+    // EN: allocate the working buffer.
+    void* tempStorage;
+    cudaMalloc(&tempStorage, tempStorageSize);
+
+    printf("DeviceRadixSort::SortKeys, uint64_t:\n");
+    bool allSuccess = true;
+    for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
+        // JP: 値のセットとリファレンスとしての答えの計算。
+        // EN: set values and calculate the reference answer.
+        const uint32_t numElements = rng() % (MaxNumElements + 1);
+        for (int i = 0; i < numElements; ++i) {
+            KeyType key = dist(rng);
+            keysOnHost[i] = key;
+        }
+        cudaMemcpy(keysOnDevice.Current(), keysOnHost, numElements * sizeof(KeyType), cudaMemcpyHostToDevice);
+        std::stable_sort(keysOnHost, keysOnHost + numElements);
+
+        // JP: ソートの実行。
+        // EN: perform sort.
+        cubd::DeviceRadixSort::SortKeys(tempStorage, tempStorageSize,
+                                        keysOnDevice, numElements);
+
+        cudaMemcpy(sortedKeysOnHost, keysOnDevice.Current(), sizeof(KeyType) * numElements, cudaMemcpyDeviceToHost);
+
+        bool success = true;
+        for (int i = 0; i < numElements; ++i) {
+            success &= sortedKeysOnHost[i] == keysOnHost[i];
+            if (!success)
+                break;
+        }
+        printf("  N:%5u%s\n", numElements, success ? "" : " NG");
+
+        allSuccess &= success;
+    }
+    printf("\n");
+
+    delete[] sortedKeysOnHost;
+
+    cudaFree(tempStorage);
+    cudaFree(keysOnDeviceB);
+    cudaFree(keysOnDeviceA);
+
     delete[]  keysOnHost;
 
     return allSuccess;
