@@ -1,10 +1,10 @@
-#pragma once
+ï»¿#pragma once
 
 #include <cstdint>
 #include <cuda_runtime.h>
 
-// JP: ‚±‚Ìƒwƒbƒ_[‚ÍCUB‚Ìƒwƒbƒ_[‚ğŒ©‚¹‚Ä‚¢‚È‚¢‚½‚ßA
-//     ‚±‚Ìƒwƒbƒ_[‚ğinclude‚·‚éƒtƒ@ƒCƒ‹‚Í’Êí‚ÌC++ƒR[ƒh‚Æ‚µ‚ÄƒRƒ“ƒpƒCƒ‹‚Å‚«‚éB
+// JP: ã“ã®ãƒ˜ãƒƒãƒ€ãƒ¼ã¯CUBã®ãƒ˜ãƒƒãƒ€ãƒ¼ã‚’è¦‹ã›ã¦ã„ãªã„ãŸã‚ã€
+//     ã“ã®ãƒ˜ãƒƒãƒ€ãƒ¼ã‚’includeã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã¯é€šå¸¸ã®C++ã‚³ãƒ¼ãƒ‰ã¨ã—ã¦ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã§ãã‚‹ã€‚
 // EN: This header doesn't expose the CUB headers to make it possible to compile
 //     files including this header as ordinary C++ code.
 

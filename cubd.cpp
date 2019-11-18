@@ -1,4 +1,4 @@
-#include "cubd.h"
+ï»¿#include "cubd.h"
 
 #include <iterator>
 
@@ -7,14 +7,14 @@
 #include "cub/cub.cuh"
 #endif
 
-// JP: CUB‚ÌŠÖ”‚ğg—p‚·‚é‚½‚ß‚ÉA‚±‚Ìƒtƒ@ƒCƒ‹‚Í
-//     NVCCƒRƒ“ƒpƒCƒ‹ƒ^ƒCƒv"Generate hybrid object file (--compile)"
-//     ‚Æ‚µ‚ÄƒRƒ“ƒpƒCƒ‹‚·‚é•K—v‚ª‚ ‚éB
+// JP: CUBã®é–¢æ•°ã‚’ä½¿ç”¨ã™ã‚‹ãŸã‚ã«ã€ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¯
+//     NVCCã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚¿ã‚¤ãƒ—"Generate hybrid object file (--compile)"
+//     ã¨ã—ã¦ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã€‚
 // EN: This file needs to be compiled as 
 //     NVCC compilation type "Generate hybrid object file (--compile)".
 //     to use CUB functions.
 
-// JP: ƒeƒ“ƒvƒŒ[ƒg‚Ì–¾¦“IƒCƒ“ƒXƒ^ƒ“ƒX‰»‚ğg‚Á‚Ä•K—v‚È’è‹`‚ğ‘«‚µ‚Ä‚­‚¾‚³‚¢B
+// JP: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã®æ˜ç¤ºçš„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŒ–ã‚’ä½¿ã£ã¦å¿…è¦ãªå®šç¾©ã‚’è¶³ã—ã¦ãã ã•ã„ã€‚
 // EN: Add necessary definitions using explicit template instanciation.
 
 namespace cubd {
@@ -199,7 +199,7 @@ namespace cubd {
         return res;
     }
 
-    // JP: RadixSort‚Ì’l‚É‚Í”CˆÓ‚ÌŒ^‚ªg—p‰Â”\B
+    // JP: RadixSortã®å€¤ã«ã¯ä»»æ„ã®å‹ãŒä½¿ç”¨å¯èƒ½ã€‚
     // EN: Value can be an arbitrary type.
     template cudaError_t DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(uint64_t, uint32_t);
 

@@ -1,4 +1,4 @@
-#include <cstdio>
+ï»¿#include <cstdio>
 #include <cstdint>
 #include <algorithm>
 #include <random>
@@ -6,7 +6,7 @@
 
 #include "cubd.h"
 
-// JP: ‚±‚Ìƒtƒ@ƒCƒ‹‚Í’Êí‚ÌC++ƒR[ƒh‚Æ‚µ‚ÄƒRƒ“ƒpƒCƒ‹‚Å‚«‚éB
+// JP: ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¯é€šå¸¸ã®C++ã‚³ãƒ¼ãƒ‰ã¨ã—ã¦ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã§ãã‚‹ã€‚
 // EN: This file can be compiled as an ordinary C++ code.
 
 static bool test_sum_int32_t();
@@ -102,13 +102,13 @@ static bool test_sum_int32_t() {
     ValueType* sumOnDevice;
     cudaMalloc(&sumOnDevice, sizeof(ValueType));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::Sum(nullptr, tempStorageSize,
                             valuesOnDevice, sumOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -116,7 +116,7 @@ static bool test_sum_int32_t() {
     printf("DeviceReduce::Sum, int32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType refSum = 0;
@@ -129,7 +129,7 @@ static bool test_sum_int32_t() {
 
         cudaMemset(sumOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::Sum(tempStorage, tempStorageSize,
                                 valuesOnDevice, sumOnDevice, numElements);
@@ -167,13 +167,13 @@ static bool test_sum_uint32_t() {
     ValueType* sumOnDevice;
     cudaMalloc(&sumOnDevice, sizeof(ValueType));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::Sum(nullptr, tempStorageSize,
                             valuesOnDevice, sumOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -181,7 +181,7 @@ static bool test_sum_uint32_t() {
     printf("DeviceReduce::Sum, uint32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType refSum = 0;
@@ -194,7 +194,7 @@ static bool test_sum_uint32_t() {
 
         cudaMemset(sumOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::Sum(tempStorage, tempStorageSize,
                                 valuesOnDevice, sumOnDevice, numElements);
@@ -232,13 +232,13 @@ static bool test_sum_float() {
     ValueType* sumOnDevice;
     cudaMalloc(&sumOnDevice, sizeof(ValueType));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::Sum(nullptr, tempStorageSize,
                             valuesOnDevice, sumOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -246,7 +246,7 @@ static bool test_sum_float() {
     printf("DeviceReduce::Sum, float:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         double refSum = 0;
@@ -259,7 +259,7 @@ static bool test_sum_float() {
 
         cudaMemset(sumOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::Sum(tempStorage, tempStorageSize,
                                 valuesOnDevice, sumOnDevice, numElements);
@@ -299,13 +299,13 @@ static bool test_min_int32_t() {
     ValueType* minOnDevice;
     cudaMalloc(&minOnDevice, sizeof(ValueType));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::Sum(nullptr, tempStorageSize,
                             valuesOnDevice, minOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -313,7 +313,7 @@ static bool test_min_int32_t() {
     printf("DeviceReduce::Min, int32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType refMin = std::numeric_limits<ValueType>::max();
@@ -326,7 +326,7 @@ static bool test_min_int32_t() {
 
         cudaMemset(minOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::Min(tempStorage, tempStorageSize,
                                 valuesOnDevice, minOnDevice, numElements);
@@ -364,13 +364,13 @@ static bool test_min_uint32_t() {
     ValueType* minOnDevice;
     cudaMalloc(&minOnDevice, sizeof(ValueType));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::Min(nullptr, tempStorageSize,
                             valuesOnDevice, minOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -378,7 +378,7 @@ static bool test_min_uint32_t() {
     printf("DeviceReduce::Min, uint32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType refMin = std::numeric_limits<ValueType>::max();
@@ -391,7 +391,7 @@ static bool test_min_uint32_t() {
 
         cudaMemset(minOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::Min(tempStorage, tempStorageSize,
                                 valuesOnDevice, minOnDevice, numElements);
@@ -429,13 +429,13 @@ static bool test_min_float() {
     ValueType* minOnDevice;
     cudaMalloc(&minOnDevice, sizeof(ValueType));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::Min(nullptr, tempStorageSize,
                             valuesOnDevice, minOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -443,7 +443,7 @@ static bool test_min_float() {
     printf("DeviceReduce::Min, float:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType refMin = std::numeric_limits<ValueType>::max();
@@ -456,7 +456,7 @@ static bool test_min_float() {
 
         cudaMemset(minOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::Min(tempStorage, tempStorageSize,
                                 valuesOnDevice, minOnDevice, numElements);
@@ -494,13 +494,13 @@ static bool test_max_int32_t() {
     ValueType* maxOnDevice;
     cudaMalloc(&maxOnDevice, sizeof(ValueType));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::Max(nullptr, tempStorageSize,
                             valuesOnDevice, maxOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -508,7 +508,7 @@ static bool test_max_int32_t() {
     printf("DeviceReduce::Max, int32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType refMax = std::numeric_limits<ValueType>::min();
@@ -521,7 +521,7 @@ static bool test_max_int32_t() {
 
         cudaMemset(maxOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::Max(tempStorage, tempStorageSize,
                                 valuesOnDevice, maxOnDevice, numElements);
@@ -559,13 +559,13 @@ static bool test_max_uint32_t() {
     ValueType* maxOnDevice;
     cudaMalloc(&maxOnDevice, sizeof(ValueType));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::Max(nullptr, tempStorageSize,
                             valuesOnDevice, maxOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -573,7 +573,7 @@ static bool test_max_uint32_t() {
     printf("DeviceReduce::Max, uint32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType refMax = std::numeric_limits<ValueType>::min();
@@ -586,7 +586,7 @@ static bool test_max_uint32_t() {
 
         cudaMemset(maxOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::Max(tempStorage, tempStorageSize,
                                 valuesOnDevice, maxOnDevice, numElements);
@@ -624,13 +624,13 @@ static bool test_max_float() {
     ValueType* maxOnDevice;
     cudaMalloc(&maxOnDevice, sizeof(ValueType));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::Max(nullptr, tempStorageSize,
                             valuesOnDevice, maxOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -638,7 +638,7 @@ static bool test_max_float() {
     printf("DeviceReduce::Max, float:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType refMax = std::numeric_limits<ValueType>::min();
@@ -651,7 +651,7 @@ static bool test_max_float() {
 
         cudaMemset(maxOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::Max(tempStorage, tempStorageSize,
                                 valuesOnDevice, maxOnDevice, numElements);
@@ -689,13 +689,13 @@ static bool test_argmin_int32_t() {
     cubd::KeyValuePair<int32_t, ValueType>* minOnDevice;
     cudaMalloc(&minOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::ArgMin(nullptr, tempStorageSize,
                                valuesOnDevice, minOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -703,7 +703,7 @@ static bool test_argmin_int32_t() {
     printf("DeviceReduce::ArgMin, int32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         int32_t refIdx = -1;
@@ -720,7 +720,7 @@ static bool test_argmin_int32_t() {
 
         cudaMemset(minOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::ArgMin(tempStorage, tempStorageSize,
                                    valuesOnDevice, minOnDevice, numElements);
@@ -760,13 +760,13 @@ static bool test_argmin_uint32_t() {
     cubd::KeyValuePair<int32_t, ValueType>* minOnDevice;
     cudaMalloc(&minOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::ArgMin(nullptr, tempStorageSize,
                                valuesOnDevice, minOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -774,7 +774,7 @@ static bool test_argmin_uint32_t() {
     printf("DeviceReduce::ArgMin, uint32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         int32_t refIdx = -1;
@@ -791,7 +791,7 @@ static bool test_argmin_uint32_t() {
 
         cudaMemset(minOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::ArgMin(tempStorage, tempStorageSize,
                                    valuesOnDevice, minOnDevice, numElements);
@@ -831,13 +831,13 @@ static bool test_argmin_float() {
     cubd::KeyValuePair<int32_t, ValueType>* minOnDevice;
     cudaMalloc(&minOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::ArgMin(nullptr, tempStorageSize,
                                valuesOnDevice, minOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -845,7 +845,7 @@ static bool test_argmin_float() {
     printf("DeviceReduce::ArgMin, float:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         int32_t refIdx = -1;
@@ -862,7 +862,7 @@ static bool test_argmin_float() {
 
         cudaMemset(minOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::ArgMin(tempStorage, tempStorageSize,
                                    valuesOnDevice, minOnDevice, numElements);
@@ -902,13 +902,13 @@ static bool test_argmax_int32_t() {
     cubd::KeyValuePair<int32_t, ValueType>* maxOnDevice;
     cudaMalloc(&maxOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::ArgMax(nullptr, tempStorageSize,
                                valuesOnDevice, maxOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -916,7 +916,7 @@ static bool test_argmax_int32_t() {
     printf("DeviceReduce::ArgMax, int32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         int32_t refIdx = -1;
@@ -933,7 +933,7 @@ static bool test_argmax_int32_t() {
 
         cudaMemset(maxOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::ArgMax(tempStorage, tempStorageSize,
                                    valuesOnDevice, maxOnDevice, numElements);
@@ -973,13 +973,13 @@ static bool test_argmax_uint32_t() {
     cubd::KeyValuePair<int32_t, ValueType>* maxOnDevice;
     cudaMalloc(&maxOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::ArgMax(nullptr, tempStorageSize,
                                valuesOnDevice, maxOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -987,7 +987,7 @@ static bool test_argmax_uint32_t() {
     printf("DeviceReduce::ArgMax, uint32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         int32_t refIdx = -1;
@@ -1004,7 +1004,7 @@ static bool test_argmax_uint32_t() {
 
         cudaMemset(maxOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::ArgMax(tempStorage, tempStorageSize,
                                    valuesOnDevice, maxOnDevice, numElements);
@@ -1044,13 +1044,13 @@ static bool test_argmax_float() {
     cubd::KeyValuePair<int32_t, ValueType>* maxOnDevice;
     cudaMalloc(&maxOnDevice, sizeof(cubd::KeyValuePair<int32_t, ValueType>));
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceReduce::ArgMax(nullptr, tempStorageSize,
                                valuesOnDevice, maxOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -1058,7 +1058,7 @@ static bool test_argmax_float() {
     printf("DeviceReduce::ArgMax, float:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         int32_t refIdx = -1;
@@ -1075,7 +1075,7 @@ static bool test_argmax_float() {
 
         cudaMemset(maxOnDevice, 0, sizeof(ValueType));
 
-        // JP: ƒŠƒ_ƒNƒVƒ‡ƒ“‚ÌÀsB
+        // JP: ãƒªãƒ€ã‚¯ã‚·ãƒ§ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform reduction.
         cubd::DeviceReduce::ArgMax(tempStorage, tempStorageSize,
                                    valuesOnDevice, maxOnDevice, numElements);
@@ -1117,13 +1117,13 @@ static bool test_exclusive_sum_int32_t() {
     cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
     auto prefixSumsOnHost = new ValueType[MaxNumElements];
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceScan::ExclusiveSum(nullptr, tempStorageSize,
                                    valuesOnDevice, prefixSumsOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -1131,7 +1131,7 @@ static bool test_exclusive_sum_int32_t() {
     printf("DeviceScan::ExclusiveSum, int32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType sum = 0;
@@ -1143,7 +1143,7 @@ static bool test_exclusive_sum_int32_t() {
         }
         cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        // JP: ƒXƒLƒƒƒ“‚ÌÀsB
+        // JP: ã‚¹ã‚­ãƒ£ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform scan.
         cubd::DeviceScan::ExclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
@@ -1191,13 +1191,13 @@ static bool test_exclusive_sum_uint32_t() {
     cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
     auto prefixSumsOnHost = new ValueType[MaxNumElements];
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceScan::ExclusiveSum(nullptr, tempStorageSize,
                                    valuesOnDevice, prefixSumsOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -1205,7 +1205,7 @@ static bool test_exclusive_sum_uint32_t() {
     printf("DeviceScan::ExclusiveSum, uint32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType sum = 0;
@@ -1217,7 +1217,7 @@ static bool test_exclusive_sum_uint32_t() {
         }
         cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        // JP: ƒXƒLƒƒƒ“‚ÌÀsB
+        // JP: ã‚¹ã‚­ãƒ£ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform scan.
         cubd::DeviceScan::ExclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
@@ -1265,13 +1265,13 @@ static bool test_exclusive_sum_float() {
     cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
     auto prefixSumsOnHost = new ValueType[MaxNumElements];
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceScan::ExclusiveSum(nullptr, tempStorageSize,
                                    valuesOnDevice, prefixSumsOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -1279,7 +1279,7 @@ static bool test_exclusive_sum_float() {
     printf("DeviceScan::ExclusiveSum, float:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         double sum = 0;
@@ -1291,7 +1291,7 @@ static bool test_exclusive_sum_float() {
         }
         cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        // JP: ƒXƒLƒƒƒ“‚ÌÀsB
+        // JP: ã‚¹ã‚­ãƒ£ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform scan.
         cubd::DeviceScan::ExclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
@@ -1343,13 +1343,13 @@ static bool test_inclusive_sum_int32_t() {
     cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
     auto prefixSumsOnHost = new ValueType[MaxNumElements];
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceScan::InclusiveSum(nullptr, tempStorageSize,
                                    valuesOnDevice, prefixSumsOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -1357,7 +1357,7 @@ static bool test_inclusive_sum_int32_t() {
     printf("DeviceScan::InclusiveSum, int32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType sum = 0;
@@ -1369,7 +1369,7 @@ static bool test_inclusive_sum_int32_t() {
         }
         cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        // JP: ƒXƒLƒƒƒ“‚ÌÀsB
+        // JP: ã‚¹ã‚­ãƒ£ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform scan.
         cubd::DeviceScan::InclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
@@ -1417,13 +1417,13 @@ static bool test_inclusive_sum_uint32_t() {
     cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
     auto prefixSumsOnHost = new ValueType[MaxNumElements];
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceScan::InclusiveSum(nullptr, tempStorageSize,
                                    valuesOnDevice, prefixSumsOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -1431,7 +1431,7 @@ static bool test_inclusive_sum_uint32_t() {
     printf("DeviceScan::InclusiveSum, uint32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         ValueType sum = 0;
@@ -1443,7 +1443,7 @@ static bool test_inclusive_sum_uint32_t() {
         }
         cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        // JP: ƒXƒLƒƒƒ“‚ÌÀsB
+        // JP: ã‚¹ã‚­ãƒ£ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform scan.
         cubd::DeviceScan::InclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
@@ -1491,13 +1491,13 @@ static bool test_inclusive_sum_float() {
     cudaMalloc(&prefixSumsOnDevice, MaxNumElements * sizeof(ValueType));
     auto prefixSumsOnHost = new ValueType[MaxNumElements];
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceScan::InclusiveSum(nullptr, tempStorageSize,
                                    valuesOnDevice, prefixSumsOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -1505,7 +1505,7 @@ static bool test_inclusive_sum_float() {
     printf("DeviceScan::InclusiveSum, float:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         double sum = 0;
@@ -1517,7 +1517,7 @@ static bool test_inclusive_sum_float() {
         }
         cudaMemcpy(valuesOnDevice, valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        // JP: ƒXƒLƒƒƒ“‚ÌÀsB
+        // JP: ã‚¹ã‚­ãƒ£ãƒ³ã®å®Ÿè¡Œã€‚
         // EN: perform scan.
         cubd::DeviceScan::InclusiveSum(tempStorage, tempStorageSize,
                                        valuesOnDevice, prefixSumsOnDevice, numElements);
@@ -1578,13 +1578,13 @@ static bool test_radix_sort_uint64_t_key_uint32_t_value() {
     auto sortedKeysOnHost = new KeyType[MaxNumElements];
     auto sortedValuesOnHost = new ValueType[MaxNumElements];
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceRadixSort::SortPairs(nullptr, tempStorageSize,
                                      keysOnDevice, valuesOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -1592,7 +1592,7 @@ static bool test_radix_sort_uint64_t_key_uint32_t_value() {
     printf("DeviceRadixSort::SortPairs, uint64_t / uint32_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         for (int i = 0; i < numElements; ++i) {
@@ -1608,7 +1608,7 @@ static bool test_radix_sort_uint64_t_key_uint32_t_value() {
         cudaMemcpy(keysOnDevice.Current(), keysOnHost, numElements * sizeof(KeyType), cudaMemcpyHostToDevice);
         cudaMemcpy(valuesOnDevice.Current(), valuesOnHost, numElements * sizeof(ValueType), cudaMemcpyHostToDevice);
 
-        // JP: ƒ\[ƒg‚ÌÀsB
+        // JP: ã‚½ãƒ¼ãƒˆã®å®Ÿè¡Œã€‚
         // EN: perform sort.
         cubd::DeviceRadixSort::SortPairs(tempStorage, tempStorageSize,
                                          keysOnDevice, valuesOnDevice, numElements);
@@ -1661,13 +1661,13 @@ static bool test_radix_sort_uint64_t_key() {
     cubd::DoubleBuffer<KeyType> keysOnDevice(keysOnDeviceA, keysOnDeviceB);
     auto sortedKeysOnHost = new KeyType[MaxNumElements];
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌÅ‘åƒTƒCƒY‚ğ“¾‚éB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æœ€å¤§ã‚µã‚¤ã‚ºã‚’å¾—ã‚‹ã€‚
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     cubd::DeviceRadixSort::SortKeys(nullptr, tempStorageSize,
                                     keysOnDevice, MaxNumElements);
 
-    // JP: ì‹Æƒoƒbƒtƒ@[‚ÌŠm•ÛB
+    // JP: ä½œæ¥­ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®ç¢ºä¿ã€‚
     // EN: allocate the working buffer.
     void* tempStorage;
     cudaMalloc(&tempStorage, tempStorageSize);
@@ -1675,7 +1675,7 @@ static bool test_radix_sort_uint64_t_key() {
     printf("DeviceRadixSort::SortKeys, uint64_t:\n");
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
-        // JP: ’l‚ÌƒZƒbƒg‚ÆƒŠƒtƒ@ƒŒƒ“ƒX‚Æ‚µ‚Ä‚Ì“š‚¦‚ÌŒvZB
+        // JP: å€¤ã®ã‚»ãƒƒãƒˆã¨ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã¨ã—ã¦ã®ç­”ãˆã®è¨ˆç®—ã€‚
         // EN: set values and calculate the reference answer.
         const uint32_t numElements = rng() % (MaxNumElements + 1);
         for (int i = 0; i < numElements; ++i) {
@@ -1685,7 +1685,7 @@ static bool test_radix_sort_uint64_t_key() {
         cudaMemcpy(keysOnDevice.Current(), keysOnHost, numElements * sizeof(KeyType), cudaMemcpyHostToDevice);
         std::stable_sort(keysOnHost, keysOnHost + numElements);
 
-        // JP: ƒ\[ƒg‚ÌÀsB
+        // JP: ã‚½ãƒ¼ãƒˆã®å®Ÿè¡Œã€‚
         // EN: perform sort.
         cubd::DeviceRadixSort::SortKeys(tempStorage, tempStorageSize,
                                         keysOnDevice, numElements);
