@@ -4,7 +4,7 @@
 #include <random>
 #include <limits>
 
-#include "libcubd/cubd.h"
+#include "cubd.h"
 
 // JP: このファイルは通常のC++コードとしてコンパイルできる。
 // EN: This file can be compiled as an ordinary C++ code.

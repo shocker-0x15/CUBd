@@ -18,6 +18,15 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\cubd.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\cubd.cpp">
+      <AdditionalCompilerOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/wd 4819</AdditionalCompilerOptions>
+      <AdditionalCompilerOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/wd 4819</AdditionalCompilerOptions>
+    </CudaCompile>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{F94DC336-AD9C-4CDC-8A00-F1FEE8E72E0E}</ProjectGuid>
@@ -72,11 +81,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
     <TargetName>libcubd</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
     <TargetName>libcubd</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -141,15 +148,6 @@
       <TargetMachinePlatform>64</TargetMachinePlatform>
     </CudaCompile>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="cubd.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CudaCompile Include="cubd.cpp">
-      <AdditionalCompilerOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/wd 4819</AdditionalCompilerOptions>
-      <AdditionalCompilerOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/wd 4819</AdditionalCompilerOptions>
-    </CudaCompile>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.1.targets" />

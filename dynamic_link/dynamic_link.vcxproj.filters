@@ -4,6 +4,6 @@
     <ClCompile Include="..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\libcubd\cubd.h" />
+    <ClInclude Include="..\cubd.h" />
   </ItemGroup>
 </Project>
