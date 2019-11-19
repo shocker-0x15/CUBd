@@ -22,7 +22,7 @@ As code example below shows, you can use it in the same way as CUB except for th
   Example usage of the dynamic link library generated from libcubd.
 - static_link\
   libcubd_staticによって生成される静的リンクライブラリの使用例。\
-  Example usage of the static link library generated from libcubd.
+  Example usage of the static link library generated from libcubd_static.
 
 ## コード例 / Code Example
 CUBにおけるDevice-wide Radix Sort\
