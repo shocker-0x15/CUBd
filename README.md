@@ -10,8 +10,8 @@
 However, it has a drawback that including CUB's header files to use device-wide primitives brings CUDA-specific reserved words into the source code.
 This means that those files including CUB's header needs to be compiled via NVCC.
 **CUBd** is a simple library (example) to isolate the include of the CUB's headers.
-As code example below shows, you can use it in the same way as CUB except for that namespace changes from cub to cubd.\
-\
+As code example below shows, you can use it in the same way as CUB except for that namespace changes from cub to cubd.
+
 - libcubd
 - libcubd_static
 - direct_use\
