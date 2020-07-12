@@ -51,5 +51,18 @@ cubd::DeviceRadixSort::SortPairs(tempStorage, tempStorageSize,
 CUBd is just an implementation "example" and doesn't support all the (device-wide) primitives CUB provides.
 However, it is easy to add a primitive which CUBd supports by writing explicit template instanciation to cubd.cpp.
 
+## 動作環境 / Confirmed Environment
+現状以下の環境で動作を確認しています。\
+I've confirmed that the program runs correctly on the following environment.
+
+* Windows 10 (1909) & Visual Studio 2019 (16.6.3)
+* Core i9-9900K, 32GB, RTX 2070 8GB
+* NVIDIA Driver 451.48
+
+動作させるにあたっては以下のライブラリが必要です。\
+It requires the following libraries.
+
+* CUDA 11.0
+
 ----
-2019 [@Shocker_0x15](https://twitter.com/Shocker_0x15)
+2020 [@Shocker_0x15](https://twitter.com/Shocker_0x15)

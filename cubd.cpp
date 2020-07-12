@@ -2,10 +2,7 @@
 
 #include <iterator>
 
-// Intellisense is broken if it reads this header.
-#ifndef __INTELLISENSE__
-#include "cub/cub.cuh"
-#endif
+#include <cub/cub.cuh>
 
 // JP: CUBの関数を使用するために、このファイルは
 //     NVCCコンパイルタイプ"Generate hybrid object file (--compile)"
