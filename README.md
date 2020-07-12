@@ -6,7 +6,7 @@
 **CUBd**は、CUBのincludeを隠蔽することを目的にしたシンプルなライブラリ(の実装例)です。
 使用方法は下記コード例にも示すように、namespaceがcubからcubdに変わったこと以外オリジナルのCUBと全く同じになるようにしています。\
 \
-[CUB](https://nvlabs.github.io/cub/) provides very handy parallel compute primitives like reduction and sort for CUDA GPGPU programming.
+[CUB](https://nvlabs.github.io/cub/) provides very useful parallel compute primitives like reduction and sort for CUDA GPGPU programming.
 However, it has a drawback that including CUB's header files to use device-wide primitives brings CUDA-specific reserved words into the source code.
 This means that those files including CUB's header needs to be compiled via NVCC.
 **CUBd** is a simple library (example) to isolate the include of the CUB's headers.
