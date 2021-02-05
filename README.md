@@ -55,14 +55,15 @@ However, it is easy to add a primitive which CUBd supports by writing explicit t
 現状以下の環境で動作を確認しています。\
 I've confirmed that the program runs correctly on the following environment.
 
-* Windows 10 (1909) & Visual Studio 2019 (16.6.3)
-* Core i9-9900K, 32GB, RTX 2070 8GB
-* NVIDIA Driver 451.48
+* Windows 10 (20H2) & Visual Studio 2019 (16.8.4)
+* Core i9-9900K, 32GB, RTX 3080 10GB
+* NVIDIA Driver 461.40
 
 動作させるにあたっては以下のライブラリが必要です。\
 It requires the following libraries.
 
-* CUDA 11.0
+* CUDA 11.2
+  (cubd might able to be built with bit older CUDA version 11.0-)
 
 ----
 2020 [@Shocker_0x15](https://twitter.com/Shocker_0x15)
