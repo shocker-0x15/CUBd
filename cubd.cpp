@@ -123,6 +123,24 @@ namespace cubd {
         return cudaError_t_to_CUresult(cudaError);
     }
 
+    template <typename KeyT, typename ValueT>
+    CUresult DEVICE_RADIX_SORT_SORT_PAIRS_DESCENDING_SIGNATURE(KeyT, ValueT) {
+        static_assert(sizeof(cubd::DoubleBuffer<KeyT>) == sizeof(cub::DoubleBuffer<KeyT>) &&
+                      sizeof(cubd::DoubleBuffer<ValueT>) == sizeof(cub::DoubleBuffer<ValueT>),
+                      "Sizes of DoubleBuffer: Not match");
+
+        auto cub_d_keys = reinterpret_cast<cub::DoubleBuffer<KeyT> &>(d_keys);
+        auto cub_d_values = reinterpret_cast<cub::DoubleBuffer<ValueT> &>(d_values);
+        cudaError_t cudaError = cub::DeviceRadixSort::SortPairsDescending(
+            d_temp_storage, temp_storage_bytes,
+            cub_d_keys, cub_d_values, num_items,
+            begin_bit, end_bit,
+            stream, debug_synchronous);
+        d_keys = reinterpret_cast<cubd::DoubleBuffer<KeyT> &>(cub_d_keys);
+        d_values = reinterpret_cast<cubd::DoubleBuffer<ValueT> &>(cub_d_values);
+        return cudaError_t_to_CUresult(cudaError);
+    }
+
     template <typename KeyT>
     CUresult DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(KeyT) {
         static_assert(sizeof(cubd::DoubleBuffer<KeyT>) == sizeof(cub::DoubleBuffer<KeyT>),
@@ -130,6 +148,21 @@ namespace cubd {
 
         auto cub_d_keys = reinterpret_cast<cub::DoubleBuffer<KeyT> &>(d_keys);
         cudaError_t cudaError = cub::DeviceRadixSort::SortKeys(
+            d_temp_storage, temp_storage_bytes,
+            cub_d_keys, num_items,
+            begin_bit, end_bit,
+            stream, debug_synchronous);
+        d_keys = reinterpret_cast<cubd::DoubleBuffer<KeyT> &>(cub_d_keys);
+        return cudaError_t_to_CUresult(cudaError);
+    }
+
+    template <typename KeyT>
+    CUresult DEVICE_RADIX_SORT_SORT_KEYS_DESCENDING_SIGNATURE(KeyT) {
+        static_assert(sizeof(cubd::DoubleBuffer<KeyT>) == sizeof(cub::DoubleBuffer<KeyT>),
+                      "Sizes of DoubleBuffer: Not match");
+
+        auto cub_d_keys = reinterpret_cast<cub::DoubleBuffer<KeyT> &>(d_keys);
+        cudaError_t cudaError = cub::DeviceRadixSort::SortKeysDescending(
             d_temp_storage, temp_storage_bytes,
             cub_d_keys, num_items,
             begin_bit, end_bit,

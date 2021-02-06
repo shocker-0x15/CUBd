@@ -216,11 +216,23 @@ namespace cubd {
                                   int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
                                   CUstream stream = 0, bool debug_synchronous = false);
 
+        template <typename KeyT, typename ValueT>
+        static CUresult SortPairsDescending(void* d_temp_storage, size_t &temp_storage_bytes,
+                                            DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items,
+                                            int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+                                            CUstream stream = 0, bool debug_synchronous = false);
+
         template <typename KeyT>
         static CUresult SortKeys(void* d_temp_storage, size_t &temp_storage_bytes,
                                  DoubleBuffer<KeyT> &d_keys, int num_items,
                                  int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
                                  CUstream stream = 0, bool debug_synchronous = false);
+
+        template <typename KeyT>
+        static CUresult SortKeysDescending(void* d_temp_storage, size_t &temp_storage_bytes,
+                                           DoubleBuffer<KeyT> &d_keys, int num_items,
+                                           int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+                                           CUstream stream = 0, bool debug_synchronous = false);
     };
 
 #define DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(KeyT, ValueT) \
@@ -229,9 +241,21 @@ namespace cubd {
                                int begin_bit, int end_bit, \
                                CUstream stream, bool debug_synchronous)
 
-    // JP: RadixSortの値には任意の型が使用可能。
-    // EN: Value can be an arbitrary type.
+    // JP: RadixSortの値として任意の型を定義可能。
+    // EN: It is possible to define an arbitrary type as value for radix sort.
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(uint32_t, uint32_t);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(uint64_t, uint32_t);
+
+#define DEVICE_RADIX_SORT_SORT_PAIRS_DESCENDING_SIGNATURE(KeyT, ValueT) \
+    DeviceRadixSort::SortPairsDescending(void* d_temp_storage, size_t &temp_storage_bytes, \
+                                         DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items, \
+                                         int begin_bit, int end_bit, \
+                                         CUstream stream, bool debug_synchronous)
+
+    // JP: RadixSortの値として任意の型を定義可能。
+    // EN: It is possible to define an arbitrary type as value for radix sort.
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_PAIRS_DESCENDING_SIGNATURE(uint32_t, uint32_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_PAIRS_DESCENDING_SIGNATURE(uint64_t, uint32_t);
 
 #define DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(KeyT) \
     DeviceRadixSort::SortKeys(void* d_temp_storage, size_t &temp_storage_bytes, \
@@ -239,5 +263,15 @@ namespace cubd {
                               int begin_bit, int end_bit, \
                               CUstream stream, bool debug_synchronous)
 
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(uint32_t);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(uint64_t);
+
+#define DEVICE_RADIX_SORT_SORT_KEYS_DESCENDING_SIGNATURE(KeyT) \
+    DeviceRadixSort::SortKeysDescending(void* d_temp_storage, size_t &temp_storage_bytes, \
+                                        DoubleBuffer<KeyT> &d_keys, int num_items, \
+                                        int begin_bit, int end_bit, \
+                                        CUstream stream, bool debug_synchronous)
+
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_KEYS_DESCENDING_SIGNATURE(uint32_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_KEYS_DESCENDING_SIGNATURE(uint64_t);
 }
