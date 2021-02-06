@@ -37,7 +37,7 @@
 #endif
 
 #include <cstdint>
-#include <cuda_runtime.h>
+#include <cuda.h>
 
 // JP: テンプレートの明示的インスタンス化を使って必要な定義を足してください。
 // EN: Add necessary definitions using explicit template instanciation.
@@ -45,14 +45,15 @@
 namespace cubd {
     template <typename _Key, typename _Value>
     struct CUBD_API KeyValuePair {
-        typedef _Key Key;
-        typedef _Value Value;
+        using Key = _Key;
+        using Value = _Value;
 
         Key key;
         Value value;
     };
 
-#define ARGXXX_KEY_VALUE_PAIR(ValueType) KeyValuePair<int32_t, ValueType>
+    template <typename _Value>
+    using ArgXxxKeyValuePair = KeyValuePair<int32_t, _Value>;
 
 
 
@@ -83,160 +84,160 @@ namespace cubd {
 
     struct CUBD_API DeviceReduce {
         template <typename InputIteratorT, typename OutputIteratorT>
-        static cudaError_t Sum(void* d_temp_storage, size_t &temp_storage_bytes,
+        static CUresult Sum(void* d_temp_storage, size_t &temp_storage_bytes,
+                            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                            CUstream stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT>
+        static CUresult Min(void* d_temp_storage, size_t &temp_storage_bytes,
+                            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                            CUstream stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT>
+        static CUresult ArgMin(void* d_temp_storage, size_t &temp_storage_bytes,
                                InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                               cudaStream_t stream = 0, bool debug_synchronous = false);
+                               CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename InputIteratorT, typename OutputIteratorT>
-        static cudaError_t Min(void* d_temp_storage, size_t &temp_storage_bytes,
+        static CUresult Max(void* d_temp_storage, size_t &temp_storage_bytes,
+                            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                            CUstream stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT>
+        static CUresult ArgMax(void* d_temp_storage, size_t &temp_storage_bytes,
                                InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                               cudaStream_t stream = 0, bool debug_synchronous = false);
-
-        template <typename InputIteratorT, typename OutputIteratorT>
-        static cudaError_t ArgMin(void* d_temp_storage, size_t &temp_storage_bytes,
-                                  InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                                  cudaStream_t stream = 0, bool debug_synchronous = false);
-
-        template <typename InputIteratorT, typename OutputIteratorT>
-        static cudaError_t Max(void* d_temp_storage, size_t &temp_storage_bytes,
-                               InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                               cudaStream_t stream = 0, bool debug_synchronous = false);
-
-        template <typename InputIteratorT, typename OutputIteratorT>
-        static cudaError_t ArgMax(void* d_temp_storage, size_t &temp_storage_bytes,
-                                  InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                                  cudaStream_t stream = 0, bool debug_synchronous = false);
+                               CUstream stream = 0, bool debug_synchronous = false);
     };
 
 #define DEVICE_REDUCE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceReduce::Sum(void* d_temp_storage, size_t &temp_storage_bytes, \
                       InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                      cudaStream_t stream, bool debug_synchronous)
+                      CUstream stream, bool debug_synchronous)
 
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_SUM_SIGNATURE(int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_SUM_SIGNATURE(const int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_SUM_SIGNATURE(uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_SUM_SIGNATURE(float*, float*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_SUM_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(const int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(const float*, float*);
 
 #define DEVICE_REDUCE_MIN_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceReduce::Min(void* d_temp_storage, size_t &temp_storage_bytes, \
                       InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                      cudaStream_t stream, bool debug_synchronous)
+                      CUstream stream, bool debug_synchronous)
 
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MIN_SIGNATURE(int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MIN_SIGNATURE(const int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MIN_SIGNATURE(uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MIN_SIGNATURE(const uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MIN_SIGNATURE(float*, float*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MIN_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(const int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(const uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(const float*, float*);
 
 #define DEVICE_REDUCE_ARGMIN_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceReduce::ArgMin(void* d_temp_storage, size_t &temp_storage_bytes, \
                          InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                         cudaStream_t stream, bool debug_synchronous)
+                         CUstream stream, bool debug_synchronous)
 
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMIN_SIGNATURE(int32_t*, ARGXXX_KEY_VALUE_PAIR(int32_t)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMIN_SIGNATURE(const int32_t*, ARGXXX_KEY_VALUE_PAIR(int32_t)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMIN_SIGNATURE(uint32_t*, ARGXXX_KEY_VALUE_PAIR(uint32_t)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMIN_SIGNATURE(const uint32_t*, ARGXXX_KEY_VALUE_PAIR(uint32_t)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMIN_SIGNATURE(float*, ARGXXX_KEY_VALUE_PAIR(float)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMIN_SIGNATURE(const float*, ARGXXX_KEY_VALUE_PAIR(float)*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(int32_t*, ArgXxxKeyValuePair<int32_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(const int32_t*, ArgXxxKeyValuePair<int32_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(uint32_t*, ArgXxxKeyValuePair<uint32_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(const uint32_t*, ArgXxxKeyValuePair<uint32_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(float*, ArgXxxKeyValuePair<float>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(const float*, ArgXxxKeyValuePair<float>*);
 
 #define DEVICE_REDUCE_MAX_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceReduce::Max(void* d_temp_storage, size_t &temp_storage_bytes, \
                       InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                      cudaStream_t stream, bool debug_synchronous)
+                      CUstream stream, bool debug_synchronous)
 
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MAX_SIGNATURE(int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MAX_SIGNATURE(const int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MAX_SIGNATURE(uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MAX_SIGNATURE(const uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MAX_SIGNATURE(float*, float*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_MAX_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(const int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(const uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(const float*, float*);
 
 #define DEVICE_REDUCE_ARGMAX_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceReduce::ArgMax(void* d_temp_storage, size_t &temp_storage_bytes, \
                          InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                         cudaStream_t stream, bool debug_synchronous)
+                         CUstream stream, bool debug_synchronous)
 
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMAX_SIGNATURE(int32_t*, ARGXXX_KEY_VALUE_PAIR(int32_t)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMAX_SIGNATURE(const int32_t*, ARGXXX_KEY_VALUE_PAIR(int32_t)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMAX_SIGNATURE(uint32_t*, ARGXXX_KEY_VALUE_PAIR(uint32_t)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMAX_SIGNATURE(const uint32_t*, ARGXXX_KEY_VALUE_PAIR(uint32_t)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMAX_SIGNATURE(float*, ARGXXX_KEY_VALUE_PAIR(float)*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_REDUCE_ARGMAX_SIGNATURE(const float*, ARGXXX_KEY_VALUE_PAIR(float)*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(int32_t*, ArgXxxKeyValuePair<int32_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(const int32_t*, ArgXxxKeyValuePair<int32_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(uint32_t*, ArgXxxKeyValuePair<uint32_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(const uint32_t*, ArgXxxKeyValuePair<uint32_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(float*, ArgXxxKeyValuePair<float>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(const float*, ArgXxxKeyValuePair<float>*);
 
 
 
     struct CUBD_API DeviceScan {
         template <typename InputIteratorT, typename OutputIteratorT>
-        static cudaError_t ExclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes,
-                                        InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                                        cudaStream_t stream = 0, bool debug_synchronous = false);
+        static CUresult ExclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes,
+                                     InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                                     CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename InputIteratorT, typename OutputIteratorT>
-        static cudaError_t InclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes,
-                                        InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                                        cudaStream_t stream = 0, bool debug_synchronous = false);
+        static CUresult InclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes,
+                                     InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+                                     CUstream stream = 0, bool debug_synchronous = false);
     };
 
 #define DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceScan::ExclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes, \
                              InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                             cudaStream_t stream, bool debug_synchronous)
+                             CUstream stream, bool debug_synchronous)
 
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(float*, float*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const float*, float*);
 
 #define DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceScan::InclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes, \
                              InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                             cudaStream_t stream, bool debug_synchronous)
+                             CUstream stream, bool debug_synchronous)
 
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const int32_t*, int32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(float*, float*);
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const float*, float*);
 
 
 
     struct CUBD_API DeviceRadixSort {
         template <typename KeyT, typename ValueT>
-        static cudaError_t SortPairs(void* d_temp_storage, size_t &temp_storage_bytes,
-                                     DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items,
-                                     int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
-                                     cudaStream_t stream = 0, bool debug_synchronous = false);
+        static CUresult SortPairs(void* d_temp_storage, size_t &temp_storage_bytes,
+                                  DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items,
+                                  int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+                                  CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename KeyT>
-        static cudaError_t SortKeys(void* d_temp_storage, size_t &temp_storage_bytes,
-                                    DoubleBuffer<KeyT> &d_keys, int num_items,
-                                    int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
-                                    cudaStream_t stream = 0, bool debug_synchronous = false);
+        static CUresult SortKeys(void* d_temp_storage, size_t &temp_storage_bytes,
+                                 DoubleBuffer<KeyT> &d_keys, int num_items,
+                                 int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+                                 CUstream stream = 0, bool debug_synchronous = false);
     };
 
 #define DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(KeyT, ValueT) \
     DeviceRadixSort::SortPairs(void* d_temp_storage, size_t &temp_storage_bytes, \
                                DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items, \
                                int begin_bit, int end_bit, \
-                               cudaStream_t stream, bool debug_synchronous)
+                               CUstream stream, bool debug_synchronous)
 
     // JP: RadixSortの値には任意の型が使用可能。
     // EN: Value can be an arbitrary type.
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(uint64_t, uint32_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(uint64_t, uint32_t);
 
 #define DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(KeyT) \
     DeviceRadixSort::SortKeys(void* d_temp_storage, size_t &temp_storage_bytes, \
                               DoubleBuffer<KeyT> &d_keys, int num_items, \
                               int begin_bit, int end_bit, \
-                              cudaStream_t stream, bool debug_synchronous)
+                              CUstream stream, bool debug_synchronous)
 
-    CUBD_EXTERN template CUBD_API cudaError_t DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(uint64_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(uint64_t);
 }

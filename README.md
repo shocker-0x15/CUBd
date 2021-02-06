@@ -66,4 +66,4 @@ It requires the following libraries.
   (cubd might able to be built with bit older CUDA version 11.0-)
 
 ----
-2020 [@Shocker_0x15](https://twitter.com/Shocker_0x15)
+2021 [@Shocker_0x15](https://twitter.com/Shocker_0x15)

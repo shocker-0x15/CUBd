@@ -81,8 +81,12 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>$(OutDir)libcubd.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)libcubd.lib;cuda.lib;cudart_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CudaCompile />
+    <CudaLink>
+      <PerformDeviceLink>false</PerformDeviceLink>
+    </CudaLink>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -124,14 +128,16 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>$(OutDir)libcubd.lib;cudart.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(OutDir)libcubd.lib;cuda.lib;cudart_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\cuda_util.cpp" />
     <ClCompile Include="..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\cubd.h" />
+    <ClInclude Include="..\cuda_util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
