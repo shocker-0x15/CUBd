@@ -65,5 +65,8 @@ It requires the following libraries.
 * CUDA 11.2
   (cubd might able to be built with bit older CUDA version 11.0-)
 
+## ライセンス / License
+Released under the Apache License, Version 2.0 (See [LICENSE.md](LICENSE.md))
+
 ----
 2021 [@Shocker_0x15](https://twitter.com/Shocker_0x15)
