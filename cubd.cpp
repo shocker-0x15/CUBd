@@ -39,6 +39,10 @@ namespace cubd {
 
 
     static inline CUresult cudaError_t_to_CUresult(cudaError_t cudaError) {
+        // JP: Driver APIとRuntime APIのエラーコード間で対応関係のあるものは同じ数値が設定されているようなので、
+        //     エラーコードの変換は直接の代入に頼る。
+        // EN: Converting the error code relies on direct substitution because
+        //     corresponding error codes in Driver API and Runtime API seem to have the same value.
         return static_cast<CUresult>(cudaError);
     }
 

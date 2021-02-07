@@ -58,7 +58,7 @@
 #include <cuda.h>
 
 // JP: テンプレートの明示的インスタンス化を使って必要な定義を足してください。
-// EN: Add necessary definitions using explicit template instanciation.
+// EN: Add necessary definitions using explicit template instantiation.
 
 namespace cubd {
     template <typename _Key, typename _Value>
