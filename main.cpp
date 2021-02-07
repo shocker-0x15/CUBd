@@ -272,22 +272,29 @@ static bool test_DeviceReduce(uint32_t MaxNumElements, typename TypeTraits::Type
         // EN: perform reduction.
         if constexpr (opType == ReduceOpType::Sum)
             cubd::DeviceReduce::Sum(tempStorage.getDevicePointer(), tempStorageSize,
-                                    values.getDevicePointer(), result.getDevicePointer(), numElements);
+                                    values.getDevicePointer(), result.getDevicePointer(), numElements,
+                                    cuStream);
         else if constexpr (opType == ReduceOpType::Min)
             cubd::DeviceReduce::Min(tempStorage.getDevicePointer(), tempStorageSize,
-                                    values.getDevicePointer(), result.getDevicePointer(), numElements);
+                                    values.getDevicePointer(), result.getDevicePointer(), numElements,
+                                    cuStream);
         else if constexpr (opType == ReduceOpType::Max)
             cubd::DeviceReduce::Max(tempStorage.getDevicePointer(), tempStorageSize,
-                                    values.getDevicePointer(), result.getDevicePointer(), numElements);
+                                    values.getDevicePointer(), result.getDevicePointer(), numElements,
+                                    cuStream);
         else if constexpr (opType == ReduceOpType::ArgMin)
             cubd::DeviceReduce::ArgMin(tempStorage.getDevicePointer(), tempStorageSize,
-                                       values.getDevicePointer(), result.getDevicePointer(), numElements);
+                                       values.getDevicePointer(), result.getDevicePointer(), numElements,
+                                       cuStream);
         else if constexpr (opType == ReduceOpType::ArgMax)
             cubd::DeviceReduce::ArgMax(tempStorage.getDevicePointer(), tempStorageSize,
-                                       values.getDevicePointer(), result.getDevicePointer(), numElements);
+                                       values.getDevicePointer(), result.getDevicePointer(), numElements,
+                                       cuStream);
 
         ResultType resultOnHost;
-        result.read(&resultOnHost, 1);
+        result.read(&resultOnHost, 1, cuStream);
+
+        CUDADRV_CHECK(cuStreamSynchronize(cuStream));
 
         bool success = true;
         if constexpr (opType == ReduceOpType::ArgMin ||
@@ -402,10 +409,14 @@ static bool test_DeviceScan(uint32_t MaxNumElements, typename TypeTraits::Type d
         // EN: perform scan.
         if constexpr (inclusive)
             cubd::DeviceScan::InclusiveSum(tempStorage.getDevicePointer(), tempStorageSize,
-                                           values.getDevicePointer(), prefixSums.getDevicePointer(), numElements);
+                                           values.getDevicePointer(), prefixSums.getDevicePointer(), numElements,
+                                           cuStream);
         else
             cubd::DeviceScan::ExclusiveSum(tempStorage.getDevicePointer(), tempStorageSize,
-                                           values.getDevicePointer(), prefixSums.getDevicePointer(), numElements);
+                                           values.getDevicePointer(), prefixSums.getDevicePointer(), numElements,
+                                           cuStream);
+
+        CUDADRV_CHECK(cuStreamSynchronize(cuStream));
 
         ValueType* prefixSumsOnHost = prefixSums.map();
         bool success = true;
@@ -538,16 +549,22 @@ static bool test_DeviceRadixSort(uint32_t MaxNumElements, typename TypeTraits::T
         // EN: perform sort.
         if constexpr (opType == RadixSortOpType::SortKeys)
             cubd::DeviceRadixSort::SortKeys(tempStorage.getDevicePointer(), tempStorageSize,
-                                            keys, numElements);
+                                            keys, numElements, 0, sizeof(KeyType) * 8,
+                                            cuStream);
         else if constexpr (opType == RadixSortOpType::SortKeysDescending)
             cubd::DeviceRadixSort::SortKeysDescending(tempStorage.getDevicePointer(), tempStorageSize,
-                                                      keys, numElements);
+                                                      keys, numElements, 0, sizeof(KeyType) * 8,
+                                                      cuStream);
         else if constexpr (opType == RadixSortOpType::SortPairs)
             cubd::DeviceRadixSort::SortPairs(tempStorage.getDevicePointer(), tempStorageSize,
-                                             keys, values, numElements);
+                                             keys, values, numElements, 0, sizeof(KeyType) * 8,
+                                             cuStream);
         else if constexpr (opType == RadixSortOpType::SortPairsDescending)
             cubd::DeviceRadixSort::SortPairsDescending(tempStorage.getDevicePointer(), tempStorageSize,
-                                                       keys, values, numElements);
+                                                       keys, values, numElements, 0, sizeof(KeyType) * 8,
+                                                       cuStream);
+
+        CUDADRV_CHECK(cuStreamSynchronize(cuStream));
 
         cudau::TypedBuffer<KeyType> &sortedKeys = keys.selector ? keysB : keysA;
         cudau::TypedBuffer<ValueType> &sortedValues = values.selector ? valuesB : valuesA;
