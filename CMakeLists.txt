@@ -12,9 +12,9 @@ set(CMAKE_RUNTIME_LIBRARY_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 find_package(CUDAToolkit 11.6 REQUIRED)
 
-option(BUILD_SAMPLES "Build sample projects for cubd." ON)
-option(BUILD_DYNAMIC_LIB "Build dynamic-link cubd library." ON)
-option(BUILD_STATIC_LIB "Build static-link cubd library." ON)
+option(CUBD_BUILD_SAMPLES "Build sample projects for cubd." ON)
+option(CUBD_BUILD_DYNAMIC_LIB "Build dynamic-link cubd library." ON)
+option(CUBD_BUILD_STATIC_LIB "Build static-link cubd library." ON)
 
 add_library(cubd_fakelib INTERFACE)
 target_compile_definitions(
@@ -28,18 +28,18 @@ target_compile_options(
     "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<NOT:$<COMPILE_LANGUAGE:CUDA>>>:/MP>"
 )
 
-if(BUILD_DYNAMIC_LIB)
+if(CUBD_BUILD_DYNAMIC_LIB)
     add_subdirectory(libcubd)
 endif()
-if(BUILD_STATIC_LIB)
+if(CUBD_BUILD_STATIC_LIB)
     add_subdirectory(libcubd_static)
 endif()
-if (BUILD_SAMPLES)
+if (CUBD_BUILD_SAMPLES)
     add_subdirectory(direct_use)
-    if(BUILD_DYNAMIC_LIB)
+    if(CUBD_BUILD_DYNAMIC_LIB)
         add_subdirectory(dynamic_link)
     endif()
-    if(BUILD_STATIC_LIB)
+    if(CUBD_BUILD_STATIC_LIB)
         add_subdirectory(static_link)
     endif()
 endif()
