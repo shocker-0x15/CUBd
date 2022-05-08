@@ -22,7 +22,7 @@
     <ClInclude Include="..\cubd.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="..\cubd.cpp">
+    <CudaCompile Include="..\cubd.cu">
       <AdditionalCompilerOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/wd 4819</AdditionalCompilerOptions>
       <AdditionalCompilerOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/wd 4819</AdditionalCompilerOptions>
       <GPUDebugInfo Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GPUDebugInfo>

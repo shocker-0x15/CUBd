@@ -46,10 +46,10 @@ cubd::DeviceRadixSort::SortPairs(tempStorage, tempStorageSize,
 
 ## 注意 / Note
 あくまでCUBdは実装「例」であり、CUBが実装している全ての(デバイス範囲)のプリミティブをサポートしていません。
-しかしcubd.cppに必要なテンプレートの明示的インスタンス化を書き足すことで簡単にCUBdがサポートする処理を追加することができます。\
+しかしcubd.cuに必要なテンプレートの明示的インスタンス化を書き足すことで簡単にCUBdがサポートする処理を追加することができます。\
 \
 CUBd is just an implementation "example" and doesn't support all the (device-wide) primitives CUB provides.
-However, it is easy to add a primitive which CUBd supports by writing explicit template instantiation to cubd.cpp.
+However, it is easy to add a primitive which CUBd supports by writing explicit template instantiation to cubd.cu.
 
 ## 動作環境 / Confirmed Environment
 現状以下の環境で動作を確認しています。\

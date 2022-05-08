@@ -9,6 +9,6 @@
     <ClInclude Include="..\cuda_util.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="..\cubd.cpp" />
+    <CudaCompile Include="..\cubd.cu" />
   </ItemGroup>
 </Project>
