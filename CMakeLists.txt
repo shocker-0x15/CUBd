@@ -16,13 +16,13 @@ option(BUILD_SAMPLES "Build sample projects for cubd." ON)
 option(BUILD_DYNAMIC_LIB "Build dynamic-link cubd library." ON)
 option(BUILD_STATIC_LIB "Build static-link cubd library." ON)
 
-add_library(fakelib INTERFACE)
+add_library(cubd_fakelib INTERFACE)
 target_compile_definitions(
-    fakelib INTERFACE
+    cubd_fakelib INTERFACE
     "$<$<CONFIG:Debug>:_DEBUG=1>"
 )
 target_compile_options(
-    fakelib INTERFACE
+    cubd_fakelib INTERFACE
     # if (compilerID == MSVC && compilerLanguage != CUDA) set(/MP);
     "$<$<AND:$<C_COMPILER_ID:MSVC>,$<NOT:$<COMPILE_LANGUAGE:CUDA>>>:/MP>"
     "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<NOT:$<COMPILE_LANGUAGE:CUDA>>>:/MP>"

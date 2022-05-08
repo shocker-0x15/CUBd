@@ -14,6 +14,6 @@ target_compile_features("${TARGET_NAME}" PRIVATE cxx_std_20)
 set_target_properties("${TARGET_NAME}" PROPERTIES CXX_EXTENSIONS OFF)
 target_link_libraries(
     "${TARGET_NAME}"
-    fakelib
+    cubd_fakelib
     CUDA::cudart
 )

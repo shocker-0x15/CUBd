@@ -17,7 +17,7 @@ set_target_properties("${TARGET_NAME}" PROPERTIES CXX_EXTENSIONS OFF)
 target_compile_definitions("${TARGET_NAME}" PRIVATE USE_CUBD_DLL)
 target_link_libraries(
     "${TARGET_NAME}"
-    fakelib
+    cubd_fakelib
     CUDA::cuda_driver
     libcubd
 )
