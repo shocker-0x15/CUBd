@@ -55,7 +55,7 @@ However, it is easy to add a primitive which CUBd supports by writing explicit t
 現状以下の環境で動作を確認しています。\
 I've confirmed that the program runs correctly on the following environment.
 
-* Windows 10 (21H1) & Visual Studio 2022 (17.1.6)
+* Windows 10 (21H2) & Visual Studio 2022 (17.1.6)
 * Core i9-9900K, 32GB, RTX 3080 10GB
 * NVIDIA Driver 512.59
 
