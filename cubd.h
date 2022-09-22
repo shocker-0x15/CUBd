@@ -102,35 +102,41 @@ namespace cubd {
 
     struct CUBD_API DeviceReduce {
         template <typename InputIteratorT, typename OutputIteratorT>
-        static CUresult Sum(void* d_temp_storage, size_t &temp_storage_bytes,
-                            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                            CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult Sum(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+            CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename InputIteratorT, typename OutputIteratorT>
-        static CUresult Min(void* d_temp_storage, size_t &temp_storage_bytes,
-                            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                            CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult Min(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+            CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename InputIteratorT, typename OutputIteratorT>
-        static CUresult ArgMin(void* d_temp_storage, size_t &temp_storage_bytes,
-                               InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                               CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult ArgMin(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+            CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename InputIteratorT, typename OutputIteratorT>
-        static CUresult Max(void* d_temp_storage, size_t &temp_storage_bytes,
-                            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                            CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult Max(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+            CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename InputIteratorT, typename OutputIteratorT>
-        static CUresult ArgMax(void* d_temp_storage, size_t &temp_storage_bytes,
-                               InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                               CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult ArgMax(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+            CUstream stream = 0, bool debug_synchronous = false);
     };
 
 #define DEVICE_REDUCE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) \
-    DeviceReduce::Sum(void* d_temp_storage, size_t &temp_storage_bytes, \
-                      InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                      CUstream stream, bool debug_synchronous)
+    DeviceReduce::Sum( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
+        CUstream stream, bool debug_synchronous)
 
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(int32_t*, int32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(const int32_t*, int32_t*);
@@ -140,9 +146,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(const float*, float*);
 
 #define DEVICE_REDUCE_MIN_SIGNATURE(InputIteratorT, OutputIteratorT) \
-    DeviceReduce::Min(void* d_temp_storage, size_t &temp_storage_bytes, \
-                      InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                      CUstream stream, bool debug_synchronous)
+    DeviceReduce::Min( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
+        CUstream stream, bool debug_synchronous)
 
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(int32_t*, int32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(const int32_t*, int32_t*);
@@ -152,9 +159,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(const float*, float*);
 
 #define DEVICE_REDUCE_ARGMIN_SIGNATURE(InputIteratorT, OutputIteratorT) \
-    DeviceReduce::ArgMin(void* d_temp_storage, size_t &temp_storage_bytes, \
-                         InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                         CUstream stream, bool debug_synchronous)
+    DeviceReduce::ArgMin( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
+        CUstream stream, bool debug_synchronous)
 
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(int32_t*, ArgXxxKeyValuePair<int32_t>*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(const int32_t*, ArgXxxKeyValuePair<int32_t>*);
@@ -164,9 +172,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(const float*, ArgXxxKeyValuePair<float>*);
 
 #define DEVICE_REDUCE_MAX_SIGNATURE(InputIteratorT, OutputIteratorT) \
-    DeviceReduce::Max(void* d_temp_storage, size_t &temp_storage_bytes, \
-                      InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                      CUstream stream, bool debug_synchronous)
+    DeviceReduce::Max( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
+        CUstream stream, bool debug_synchronous)
 
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(int32_t*, int32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(const int32_t*, int32_t*);
@@ -176,9 +185,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(const float*, float*);
 
 #define DEVICE_REDUCE_ARGMAX_SIGNATURE(InputIteratorT, OutputIteratorT) \
-    DeviceReduce::ArgMax(void* d_temp_storage, size_t &temp_storage_bytes, \
-                         InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                         CUstream stream, bool debug_synchronous)
+    DeviceReduce::ArgMax( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
+        CUstream stream, bool debug_synchronous)
 
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(int32_t*, ArgXxxKeyValuePair<int32_t>*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(const int32_t*, ArgXxxKeyValuePair<int32_t>*);
@@ -191,20 +201,23 @@ namespace cubd {
 
     struct CUBD_API DeviceScan {
         template <typename InputIteratorT, typename OutputIteratorT>
-        static CUresult ExclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes,
-                                     InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                                     CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult ExclusiveSum(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+            CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename InputIteratorT, typename OutputIteratorT>
-        static CUresult InclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes,
-                                     InputIteratorT d_in, OutputIteratorT d_out, int num_items,
-                                     CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult InclusiveSum(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+            CUstream stream = 0, bool debug_synchronous = false);
     };
 
 #define DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) \
-    DeviceScan::ExclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes, \
-                             InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                             CUstream stream, bool debug_synchronous)
+    DeviceScan::ExclusiveSum( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
+        CUstream stream, bool debug_synchronous)
 
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(int32_t*, int32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const int32_t*, int32_t*);
@@ -214,9 +227,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const float*, float*);
 
 #define DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) \
-    DeviceScan::InclusiveSum(void* d_temp_storage, size_t &temp_storage_bytes, \
-                             InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
-                             CUstream stream, bool debug_synchronous)
+    DeviceScan::InclusiveSum( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
+        CUstream stream, bool debug_synchronous)
 
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(int32_t*, int32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const int32_t*, int32_t*);
@@ -229,35 +243,40 @@ namespace cubd {
 
     struct CUBD_API DeviceRadixSort {
         template <typename KeyT, typename ValueT>
-        static CUresult SortPairs(void* d_temp_storage, size_t &temp_storage_bytes,
-                                  DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items,
-                                  int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
-                                  CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult SortPairs(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items,
+            int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+            CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename KeyT, typename ValueT>
-        static CUresult SortPairsDescending(void* d_temp_storage, size_t &temp_storage_bytes,
-                                            DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items,
-                                            int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
-                                            CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult SortPairsDescending(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items,
+            int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+            CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename KeyT>
-        static CUresult SortKeys(void* d_temp_storage, size_t &temp_storage_bytes,
-                                 DoubleBuffer<KeyT> &d_keys, int num_items,
-                                 int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
-                                 CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult SortKeys(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            DoubleBuffer<KeyT> &d_keys, int num_items,
+            int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+            CUstream stream = 0, bool debug_synchronous = false);
 
         template <typename KeyT>
-        static CUresult SortKeysDescending(void* d_temp_storage, size_t &temp_storage_bytes,
-                                           DoubleBuffer<KeyT> &d_keys, int num_items,
-                                           int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
-                                           CUstream stream = 0, bool debug_synchronous = false);
+        static CUresult SortKeysDescending(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            DoubleBuffer<KeyT> &d_keys, int num_items,
+            int begin_bit = 0, int end_bit = sizeof(KeyT) * 8,
+            CUstream stream = 0, bool debug_synchronous = false);
     };
 
 #define DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(KeyT, ValueT) \
-    DeviceRadixSort::SortPairs(void* d_temp_storage, size_t &temp_storage_bytes, \
-                               DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items, \
-                               int begin_bit, int end_bit, \
-                               CUstream stream, bool debug_synchronous)
+    DeviceRadixSort::SortPairs( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items, \
+        int begin_bit, int end_bit, \
+        CUstream stream, bool debug_synchronous)
 
     // JP: RadixSortの値として任意の型を定義可能。
     // EN: It is possible to define an arbitrary type as value for radix sort.
@@ -265,10 +284,11 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_PAIRS_SIGNATURE(uint64_t, uint32_t);
 
 #define DEVICE_RADIX_SORT_SORT_PAIRS_DESCENDING_SIGNATURE(KeyT, ValueT) \
-    DeviceRadixSort::SortPairsDescending(void* d_temp_storage, size_t &temp_storage_bytes, \
-                                         DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items, \
-                                         int begin_bit, int end_bit, \
-                                         CUstream stream, bool debug_synchronous)
+    DeviceRadixSort::SortPairsDescending( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        DoubleBuffer<KeyT> &d_keys, DoubleBuffer<ValueT> &d_values, int num_items, \
+        int begin_bit, int end_bit, \
+        CUstream stream, bool debug_synchronous)
 
     // JP: RadixSortの値として任意の型を定義可能。
     // EN: It is possible to define an arbitrary type as value for radix sort.
@@ -276,19 +296,21 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_PAIRS_DESCENDING_SIGNATURE(uint64_t, uint32_t);
 
 #define DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(KeyT) \
-    DeviceRadixSort::SortKeys(void* d_temp_storage, size_t &temp_storage_bytes, \
-                              DoubleBuffer<KeyT> &d_keys, int num_items, \
-                              int begin_bit, int end_bit, \
-                              CUstream stream, bool debug_synchronous)
+    DeviceRadixSort::SortKeys( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        DoubleBuffer<KeyT> &d_keys, int num_items, \
+        int begin_bit, int end_bit, \
+        CUstream stream, bool debug_synchronous)
 
     CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(uint32_t);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_KEYS_SIGNATURE(uint64_t);
 
 #define DEVICE_RADIX_SORT_SORT_KEYS_DESCENDING_SIGNATURE(KeyT) \
-    DeviceRadixSort::SortKeysDescending(void* d_temp_storage, size_t &temp_storage_bytes, \
-                                        DoubleBuffer<KeyT> &d_keys, int num_items, \
-                                        int begin_bit, int end_bit, \
-                                        CUstream stream, bool debug_synchronous)
+    DeviceRadixSort::SortKeysDescending( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        DoubleBuffer<KeyT> &d_keys, int num_items, \
+        int begin_bit, int end_bit, \
+        CUstream stream, bool debug_synchronous)
 
     CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_KEYS_DESCENDING_SIGNATURE(uint32_t);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_RADIX_SORT_SORT_KEYS_DESCENDING_SIGNATURE(uint64_t);
