@@ -144,6 +144,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(float*, float*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(const int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(uint64_t*, uint64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_SUM_SIGNATURE(const uint64_t*, uint64_t*);
 
 #define DEVICE_REDUCE_MIN_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceReduce::Min( \
@@ -157,6 +161,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(const uint32_t*, uint32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(float*, float*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(const int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(uint64_t*, uint64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MIN_SIGNATURE(const uint64_t*, uint64_t*);
 
 #define DEVICE_REDUCE_ARGMIN_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceReduce::ArgMin( \
@@ -170,6 +178,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(const uint32_t*, ArgXxxKeyValuePair<uint32_t>*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(float*, ArgXxxKeyValuePair<float>*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(const float*, ArgXxxKeyValuePair<float>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(int64_t*, ArgXxxKeyValuePair<int64_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(const int64_t*, ArgXxxKeyValuePair<int64_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(uint64_t*, ArgXxxKeyValuePair<uint64_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMIN_SIGNATURE(const uint64_t*, ArgXxxKeyValuePair<uint64_t>*);
 
 #define DEVICE_REDUCE_MAX_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceReduce::Max( \
@@ -183,6 +195,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(const uint32_t*, uint32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(float*, float*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(const int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(uint64_t*, uint64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_MAX_SIGNATURE(const uint64_t*, uint64_t*);
 
 #define DEVICE_REDUCE_ARGMAX_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceReduce::ArgMax( \
@@ -196,6 +212,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(const uint32_t*, ArgXxxKeyValuePair<uint32_t>*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(float*, ArgXxxKeyValuePair<float>*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(const float*, ArgXxxKeyValuePair<float>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(int64_t*, ArgXxxKeyValuePair<int64_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(const int64_t*, ArgXxxKeyValuePair<int64_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(uint64_t*, ArgXxxKeyValuePair<uint64_t>*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_REDUCE_ARGMAX_SIGNATURE(const uint64_t*, ArgXxxKeyValuePair<uint64_t>*);
 
 
 
@@ -225,6 +245,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(float*, float*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(uint64_t*, uint64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(const uint64_t*, uint64_t*);
 
 #define DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) \
     DeviceScan::InclusiveSum( \
@@ -238,6 +262,10 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const uint32_t*, uint32_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(float*, float*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(uint64_t*, uint64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const uint64_t*, uint64_t*);
 
 
 

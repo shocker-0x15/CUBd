@@ -66,6 +66,12 @@ struct Float32Traits {
     using DistributionType = std::uniform_real_distribution<float>;
     static constexpr const char* s_keyword = "float";
 };
+struct Int64Traits {
+    using Type = int64_t;
+    using SumType = int64_t;
+    using DistributionType = std::uniform_int_distribution<int64_t>;
+    static constexpr const char* s_keyword = "int64_t";
+};
 struct UInt64Traits {
     using Type = uint64_t;
     using SumType = uint64_t;
@@ -130,30 +136,44 @@ int32_t main(int32_t argc, const char* argv[]) {
     success &= test_DeviceReduce<Int32Traits, ReduceOpType::Sum>(100000, -100, 100);
     success &= test_DeviceReduce<UInt32Traits, ReduceOpType::Sum>(100000, 0, 100);
     success &= test_DeviceReduce<Float32Traits, ReduceOpType::Sum>(100000, 0, 1);
+    success &= test_DeviceReduce<Int64Traits, ReduceOpType::Sum>(100000, -1000000, 1000000);
+    success &= test_DeviceReduce<UInt64Traits, ReduceOpType::Sum>(100000, 0, 1000000);
 
     success &= test_DeviceReduce<Int32Traits, ReduceOpType::Min>(100000, -1000000, 1000000);
     success &= test_DeviceReduce<UInt32Traits, ReduceOpType::Min>(100000, 0, 1000000);
     success &= test_DeviceReduce<Float32Traits, ReduceOpType::Min>(100000, 0, 1);
+    success &= test_DeviceReduce<Int64Traits, ReduceOpType::Min>(100000, -100000000000, 100000000000);
+    success &= test_DeviceReduce<UInt64Traits, ReduceOpType::Min>(100000, 0, 100000000000);
 
     success &= test_DeviceReduce<Int32Traits, ReduceOpType::Max>(100000, -1000000, 1000000);
     success &= test_DeviceReduce<UInt32Traits, ReduceOpType::Max>(100000, 0, 1000000);
     success &= test_DeviceReduce<Float32Traits, ReduceOpType::Max>(100000, 0, 1);
+    success &= test_DeviceReduce<Int64Traits, ReduceOpType::Max>(100000, -100000000000, 100000000000);
+    success &= test_DeviceReduce<UInt64Traits, ReduceOpType::Max>(100000, 0, 100000000000);
 
     success &= test_DeviceReduce<Int32Traits, ReduceOpType::ArgMin>(100000, -1000000, 1000000);
     success &= test_DeviceReduce<UInt32Traits, ReduceOpType::ArgMin>(100000, 0, 1000000);
     success &= test_DeviceReduce<Float32Traits, ReduceOpType::ArgMin>(100000, 0, 1);
+    success &= test_DeviceReduce<Int64Traits, ReduceOpType::ArgMin>(100000, -100000000000, 100000000000);
+    success &= test_DeviceReduce<UInt64Traits, ReduceOpType::ArgMin>(100000, 0, 100000000000);
 
     success &= test_DeviceReduce<Int32Traits, ReduceOpType::ArgMax>(100000, -1000000, 1000000);
     success &= test_DeviceReduce<UInt32Traits, ReduceOpType::ArgMax>(100000, 0, 1000000);
     success &= test_DeviceReduce<Float32Traits, ReduceOpType::ArgMax>(100000, 0, 1);
+    success &= test_DeviceReduce<Int64Traits, ReduceOpType::ArgMax>(100000, -100000000000, 100000000000);
+    success &= test_DeviceReduce<UInt64Traits, ReduceOpType::ArgMax>(100000, 0, 100000000000);
 
     success &= test_DeviceScan<Int32Traits, false>(100000, -100, 100);
     success &= test_DeviceScan<UInt32Traits, false>(100000, 0, 100);
     success &= test_DeviceScan<Float32Traits, false>(100000, 0, 1);
+    success &= test_DeviceScan<Int64Traits, false>(100000, -1000000, 1000000);
+    success &= test_DeviceScan<UInt64Traits, false>(100000, 0, 1000000);
 
     success &= test_DeviceScan<Int32Traits, true>(100000, -100, 100);
     success &= test_DeviceScan<UInt32Traits, true>(100000, 0, 100);
     success &= test_DeviceScan<Float32Traits, true>(100000, 0, 1);
+    success &= test_DeviceScan<Int64Traits, true>(100000, -1000000, 1000000);
+    success &= test_DeviceScan<UInt64Traits, true>(100000, 0, 1000000);
 
     success &= test_DeviceRadixSort<UInt32Traits, RadixSortOpType::SortKeys>(100000, 0, std::numeric_limits<uint32_t>::max());
     success &= test_DeviceRadixSort<UInt64Traits, RadixSortOpType::SortKeys>(100000, 0, std::numeric_limits<uint64_t>::max());
@@ -312,6 +332,14 @@ static bool test_DeviceReduce(uint32_t MaxNumElements, typename TypeTraits::Type
                 printf("  N:%5u, %g at %6d (ref: %g at %6d)%s\n", numElements,
                        resultOnHost.value, resultOnHost.key, refValue, refIdx,
                        success ? "" : " NG");
+            else if constexpr (std::is_same<TypeTraits, Int64Traits>::value)
+                printf("  N:%5u, %16lld at %6d (ref: %16lld at %6d)%s\n", numElements,
+                       resultOnHost.value, resultOnHost.key, refValue, refIdx,
+                       success ? "" : " NG");
+            else if constexpr (std::is_same<TypeTraits, UInt64Traits>::value)
+                printf("  N:%5u, %16llu at %6d (ref: %16llu at %6d)%s\n", numElements,
+                       resultOnHost.value, resultOnHost.key, refValue, refIdx,
+                       success ? "" : " NG");
         }
         else { // Sum, Min, Max
             if constexpr (std::is_same<TypeTraits, Int32Traits>::value) {
@@ -339,6 +367,18 @@ static bool test_DeviceReduce(uint32_t MaxNumElements, typename TypeTraits::Type
                     printf("  N: %5u, %g (ref: %g)%s\n", numElements, resultOnHost, refValue,
                            success ? "" : " NG");
                 }
+            }
+            else if constexpr (std::is_same<TypeTraits, Int64Traits>::value) {
+                success = resultOnHost == refValue;
+                printf("  N:%5u, %16lld (ref: %16lld)%s\n", numElements,
+                       resultOnHost, refValue,
+                       success ? "" : " NG");
+            }
+            else if constexpr (std::is_same<TypeTraits, UInt64Traits>::value) {
+                success = resultOnHost == refValue;
+                printf("  N:%5u, %16llu (ref: %16llu)%s\n", numElements,
+                       resultOnHost, refValue,
+                       success ? "" : " NG");
             }
         }
 
@@ -446,6 +486,14 @@ static bool test_DeviceScan(uint32_t MaxNumElements, typename TypeTraits::Type d
                    success ? "" : " NG");
         else if constexpr (std::is_same<TypeTraits, Float32Traits>::value)
             printf("  N:%5u, value at the end: %g (ref: %g)%s\n", numElements,
+                   prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+                   success ? "" : " NG");
+        else if constexpr (std::is_same<TypeTraits, Int64Traits>::value)
+            printf("  N:%5u, value at the end: %16lld (ref: %16lld)%s\n", numElements,
+                   prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+                   success ? "" : " NG");
+        else if constexpr (std::is_same<TypeTraits, UInt64Traits>::value)
+            printf("  N:%5u, value at the end: %16llu (ref: %16llu)%s\n", numElements,
                    prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
                    success ? "" : " NG");
 
