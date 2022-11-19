@@ -231,6 +231,18 @@ namespace cubd {
             void* d_temp_storage, size_t &temp_storage_bytes,
             InputIteratorT d_in, OutputIteratorT d_out, int num_items,
             CUstream stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT, typename InitValueT>
+        static CUresult ExclusiveMax(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            InputIteratorT d_in, OutputIteratorT d_out, InitValueT init_value, int num_items,
+            CUstream stream = 0, bool debug_synchronous = false);
+
+        template <typename InputIteratorT, typename OutputIteratorT>
+        static CUresult InclusiveMax(
+            void* d_temp_storage, size_t &temp_storage_bytes,
+            InputIteratorT d_in, OutputIteratorT d_out, int num_items,
+            CUstream stream = 0, bool debug_synchronous = false);
     };
 
 #define DEVICE_SCAN_EXCLUSIVE_SUM_SIGNATURE(InputIteratorT, OutputIteratorT) \
@@ -266,6 +278,40 @@ namespace cubd {
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const int64_t*, int64_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(uint64_t*, uint64_t*);
     CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_SUM_SIGNATURE(const uint64_t*, uint64_t*);
+
+#define DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(InputIteratorT, OutputIteratorT, InitValueT) \
+    DeviceScan::ExclusiveMax( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        InputIteratorT d_in, OutputIteratorT d_out, InitValueT init_value, int num_items, \
+        CUstream stream, bool debug_synchronous)
+
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(int32_t*, int32_t*, int32_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(const int32_t*, int32_t*, int32_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(uint32_t*, uint32_t*, uint32_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(const uint32_t*, uint32_t*, uint32_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(float*, float*, float);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(const float*, float*, float);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(int64_t*, int64_t*, int64_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(const int64_t*, int64_t*, int64_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(uint64_t*, uint64_t*, uint64_t);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(const uint64_t*, uint64_t*, uint64_t);
+
+#define DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(InputIteratorT, OutputIteratorT) \
+    DeviceScan::InclusiveMax( \
+        void* d_temp_storage, size_t &temp_storage_bytes, \
+        InputIteratorT d_in, OutputIteratorT d_out, int num_items, \
+        CUstream stream, bool debug_synchronous)
+
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(const int32_t*, int32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(const uint32_t*, uint32_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(const float*, float*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(const int64_t*, int64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(uint64_t*, uint64_t*);
+    CUBD_EXTERN template CUBD_API CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(const uint64_t*, uint64_t*);
 
 
 

@@ -96,6 +96,19 @@ static constexpr const char* reduceOpKeywords[] = {
     "ArgMax",
 };
 
+enum class ScanOpType {
+    ExclusiveSum = 0,
+    InclusiveSum,
+    ExclusiveMax,
+    InclusiveMax,
+};
+static constexpr const char* scanOpKeywords[] = {
+    "ExclusiveSum",
+    "InclusiveSum",
+    "ExclusiveMax",
+    "InclusiveMax",
+};
+
 enum class RadixSortOpType {
     SortKeys = 0,
     SortKeysDescending,
@@ -110,11 +123,14 @@ static constexpr const char* radixSortOpKeywords[] = {
 };
 
 template <typename TypeTraits, ReduceOpType opType>
-static bool test_DeviceReduce(uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax);
-template <typename TypeTraits, bool inclusive>
-static bool test_DeviceScan(uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax);
+static bool test_DeviceReduce(
+    uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax);
+template <typename TypeTraits, ScanOpType opType>
+static bool test_DeviceScan(
+    uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax);
 template <typename TypeTraits, RadixSortOpType opType>
-static bool test_DeviceRadixSort(uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax);
+static bool test_DeviceRadixSort(
+    uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax);
 
 static CUcontext cuContext;
 static CUstream cuStream;
@@ -163,29 +179,49 @@ int32_t main(int32_t argc, const char* argv[]) {
     success &= test_DeviceReduce<Int64Traits, ReduceOpType::ArgMax>(100000, -100000000000, 100000000000);
     success &= test_DeviceReduce<UInt64Traits, ReduceOpType::ArgMax>(100000, 0, 100000000000);
 
-    success &= test_DeviceScan<Int32Traits, false>(100000, -100, 100);
-    success &= test_DeviceScan<UInt32Traits, false>(100000, 0, 100);
-    success &= test_DeviceScan<Float32Traits, false>(100000, 0, 1);
-    success &= test_DeviceScan<Int64Traits, false>(100000, -1000000, 1000000);
-    success &= test_DeviceScan<UInt64Traits, false>(100000, 0, 1000000);
+    success &= test_DeviceScan<Int32Traits, ScanOpType::ExclusiveSum>(100000, -100, 100);
+    success &= test_DeviceScan<UInt32Traits, ScanOpType::ExclusiveSum>(100000, 0, 100);
+    success &= test_DeviceScan<Float32Traits, ScanOpType::ExclusiveSum>(100000, 0, 1);
+    success &= test_DeviceScan<Int64Traits, ScanOpType::ExclusiveSum>(100000, -1000000, 1000000);
+    success &= test_DeviceScan<UInt64Traits, ScanOpType::ExclusiveSum>(100000, 0, 1000000);
 
-    success &= test_DeviceScan<Int32Traits, true>(100000, -100, 100);
-    success &= test_DeviceScan<UInt32Traits, true>(100000, 0, 100);
-    success &= test_DeviceScan<Float32Traits, true>(100000, 0, 1);
-    success &= test_DeviceScan<Int64Traits, true>(100000, -1000000, 1000000);
-    success &= test_DeviceScan<UInt64Traits, true>(100000, 0, 1000000);
+    success &= test_DeviceScan<Int32Traits, ScanOpType::InclusiveSum>(100000, -100, 100);
+    success &= test_DeviceScan<UInt32Traits, ScanOpType::InclusiveSum>(100000, 0, 100);
+    success &= test_DeviceScan<Float32Traits, ScanOpType::InclusiveSum>(100000, 0, 1);
+    success &= test_DeviceScan<Int64Traits, ScanOpType::InclusiveSum>(100000, -1000000, 1000000);
+    success &= test_DeviceScan<UInt64Traits, ScanOpType::InclusiveSum>(100000, 0, 1000000);
 
-    success &= test_DeviceRadixSort<UInt32Traits, RadixSortOpType::SortKeys>(100000, 0, std::numeric_limits<uint32_t>::max());
-    success &= test_DeviceRadixSort<UInt64Traits, RadixSortOpType::SortKeys>(100000, 0, std::numeric_limits<uint64_t>::max());
+    success &= test_DeviceScan<Int32Traits, ScanOpType::ExclusiveMax>(100000, -1000000, 1000000);
+    success &= test_DeviceScan<UInt32Traits, ScanOpType::ExclusiveMax>(100000, 0, 1000000);
+    success &= test_DeviceScan<Float32Traits, ScanOpType::ExclusiveMax>(100000, 0, 10000);
+    success &= test_DeviceScan<Int64Traits, ScanOpType::ExclusiveMax>(100000, -10000000000, 10000000000);
+    success &= test_DeviceScan<UInt64Traits, ScanOpType::ExclusiveMax>(100000, 0, 10000000000);
 
-    success &= test_DeviceRadixSort<UInt32Traits, RadixSortOpType::SortKeysDescending>(100000, 0, std::numeric_limits<uint32_t>::max());
-    success &= test_DeviceRadixSort<UInt64Traits, RadixSortOpType::SortKeysDescending>(100000, 0, std::numeric_limits<uint64_t>::max());
+    success &= test_DeviceScan<Int32Traits, ScanOpType::InclusiveMax>(100000, -1000000, 1000000);
+    success &= test_DeviceScan<UInt32Traits, ScanOpType::InclusiveMax>(100000, 0, 1000000);
+    success &= test_DeviceScan<Float32Traits, ScanOpType::InclusiveMax>(100000, 0, 10000);
+    success &= test_DeviceScan<Int64Traits, ScanOpType::InclusiveMax>(100000, -10000000000, 10000000000);
+    success &= test_DeviceScan<UInt64Traits, ScanOpType::InclusiveMax>(100000, 0, 10000000000);
 
-    success &= test_DeviceRadixSort<UInt32Traits, RadixSortOpType::SortPairs>(100000, 0, std::numeric_limits<uint32_t>::max());
-    success &= test_DeviceRadixSort<UInt64Traits, RadixSortOpType::SortPairs>(100000, 0, std::numeric_limits<uint64_t>::max());
+    success &= test_DeviceRadixSort<UInt32Traits, RadixSortOpType::SortKeys>(
+        100000, 0, std::numeric_limits<uint32_t>::max());
+    success &= test_DeviceRadixSort<UInt64Traits, RadixSortOpType::SortKeys>(
+        100000, 0, std::numeric_limits<uint64_t>::max());
 
-    success &= test_DeviceRadixSort<UInt32Traits, RadixSortOpType::SortPairsDescending>(100000, 0, std::numeric_limits<uint32_t>::max());
-    success &= test_DeviceRadixSort<UInt64Traits, RadixSortOpType::SortPairsDescending>(100000, 0, std::numeric_limits<uint64_t>::max());
+    success &= test_DeviceRadixSort<UInt32Traits, RadixSortOpType::SortKeysDescending>(
+        100000, 0, std::numeric_limits<uint32_t>::max());
+    success &= test_DeviceRadixSort<UInt64Traits, RadixSortOpType::SortKeysDescending>(
+        100000, 0, std::numeric_limits<uint64_t>::max());
+
+    success &= test_DeviceRadixSort<UInt32Traits, RadixSortOpType::SortPairs>(
+        100000, 0, std::numeric_limits<uint32_t>::max());
+    success &= test_DeviceRadixSort<UInt64Traits, RadixSortOpType::SortPairs>(
+        100000, 0, std::numeric_limits<uint64_t>::max());
+
+    success &= test_DeviceRadixSort<UInt32Traits, RadixSortOpType::SortPairsDescending>(
+        100000, 0, std::numeric_limits<uint32_t>::max());
+    success &= test_DeviceRadixSort<UInt64Traits, RadixSortOpType::SortPairsDescending>(
+        100000, 0, std::numeric_limits<uint64_t>::max());
 
     if (success)
         printf("All Success!\n");
@@ -203,7 +239,8 @@ int32_t main(int32_t argc, const char* argv[]) {
 constexpr uint32_t NumTests = 10;
 
 template <typename TypeTraits, ReduceOpType opType>
-static bool test_DeviceReduce(uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax) {
+static bool test_DeviceReduce(
+    uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax) {
     using ValueType = typename TypeTraits::Type;
     using ResultType = typename std::conditional<
         opType == ReduceOpType::ArgMin || opType == ReduceOpType::ArgMax,
@@ -226,20 +263,25 @@ static bool test_DeviceReduce(uint32_t MaxNumElements, typename TypeTraits::Type
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     if constexpr (opType == ReduceOpType::Sum)
-        cubd::DeviceReduce::Sum(nullptr, tempStorageSize,
-                                values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
+        cubd::DeviceReduce::Sum(
+            nullptr, tempStorageSize,
+            values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
     else if constexpr (opType == ReduceOpType::Min)
-        cubd::DeviceReduce::Min(nullptr, tempStorageSize,
-                                values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
+        cubd::DeviceReduce::Min(
+            nullptr, tempStorageSize,
+            values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
     else if constexpr (opType == ReduceOpType::Max)
-        cubd::DeviceReduce::Max(nullptr, tempStorageSize,
-                                values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
+        cubd::DeviceReduce::Max(
+            nullptr, tempStorageSize,
+            values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
     else if constexpr (opType == ReduceOpType::ArgMin)
-        cubd::DeviceReduce::ArgMin(nullptr, tempStorageSize,
-                                   values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
+        cubd::DeviceReduce::ArgMin(
+            nullptr, tempStorageSize,
+            values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
     else if constexpr (opType == ReduceOpType::ArgMax)
-        cubd::DeviceReduce::ArgMax(nullptr, tempStorageSize,
-                                   values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
+        cubd::DeviceReduce::ArgMax(
+            nullptr, tempStorageSize,
+            values.getDevicePointer(), result.getDevicePointer(), MaxNumElements);
 
     // JP: 作業バッファーの確保。
     // EN: allocate the working buffer.
@@ -291,25 +333,30 @@ static bool test_DeviceReduce(uint32_t MaxNumElements, typename TypeTraits::Type
         // JP: リダクションの実行。
         // EN: perform reduction.
         if constexpr (opType == ReduceOpType::Sum)
-            cubd::DeviceReduce::Sum(tempStorage.getDevicePointer(), tempStorageSize,
-                                    values.getDevicePointer(), result.getDevicePointer(), numElements,
-                                    cuStream);
+            cubd::DeviceReduce::Sum(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                values.getDevicePointer(), result.getDevicePointer(), numElements,
+                cuStream);
         else if constexpr (opType == ReduceOpType::Min)
-            cubd::DeviceReduce::Min(tempStorage.getDevicePointer(), tempStorageSize,
-                                    values.getDevicePointer(), result.getDevicePointer(), numElements,
-                                    cuStream);
+            cubd::DeviceReduce::Min(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                values.getDevicePointer(), result.getDevicePointer(), numElements,
+                cuStream);
         else if constexpr (opType == ReduceOpType::Max)
-            cubd::DeviceReduce::Max(tempStorage.getDevicePointer(), tempStorageSize,
-                                    values.getDevicePointer(), result.getDevicePointer(), numElements,
-                                    cuStream);
+            cubd::DeviceReduce::Max(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                values.getDevicePointer(), result.getDevicePointer(), numElements,
+                cuStream);
         else if constexpr (opType == ReduceOpType::ArgMin)
-            cubd::DeviceReduce::ArgMin(tempStorage.getDevicePointer(), tempStorageSize,
-                                       values.getDevicePointer(), result.getDevicePointer(), numElements,
-                                       cuStream);
+            cubd::DeviceReduce::ArgMin(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                values.getDevicePointer(), result.getDevicePointer(), numElements,
+                cuStream);
         else if constexpr (opType == ReduceOpType::ArgMax)
-            cubd::DeviceReduce::ArgMax(tempStorage.getDevicePointer(), tempStorageSize,
-                                       values.getDevicePointer(), result.getDevicePointer(), numElements,
-                                       cuStream);
+            cubd::DeviceReduce::ArgMax(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                values.getDevicePointer(), result.getDevicePointer(), numElements,
+                cuStream);
 
         ResultType resultOnHost;
         result.read(&resultOnHost, 1, cuStream);
@@ -393,108 +440,158 @@ static bool test_DeviceReduce(uint32_t MaxNumElements, typename TypeTraits::Type
     return allSuccess;
 }
 
-template <typename TypeTraits, bool inclusive>
-static bool test_DeviceScan(uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax) {
+template <typename TypeTraits, ScanOpType opType>
+static bool test_DeviceScan(
+    uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax) {
     using ValueType = typename TypeTraits::Type;
     using SumValueType = typename TypeTraits::SumType;
     using DistributionType = typename TypeTraits::DistributionType;
 
     DistributionType dist(distMin, distMax);
 
-    std::vector<ValueType> refPrefixSums(MaxNumElements);
+    std::vector<ValueType> refScannedValues(MaxNumElements);
 
     cudau::TypedBuffer<ValueType> values;
     values.initialize(cuContext, bufferType, MaxNumElements);
     values.setMappedMemoryPersistent(true);
 
-    cudau::TypedBuffer<ValueType> prefixSums;
-    prefixSums.initialize(cuContext, bufferType, MaxNumElements);
-    prefixSums.setMappedMemoryPersistent(true);
+    cudau::TypedBuffer<ValueType> scannedValues;
+    scannedValues.initialize(cuContext, bufferType, MaxNumElements);
+    scannedValues.setMappedMemoryPersistent(true);
 
     // JP: 作業バッファーの最大サイズを得る。
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
-    if constexpr (inclusive)
-        cubd::DeviceScan::InclusiveSum(nullptr, tempStorageSize,
-                                       values.getDevicePointer(), prefixSums.getDevicePointer(), MaxNumElements);
-    else
-        cubd::DeviceScan::ExclusiveSum(nullptr, tempStorageSize,
-                                       values.getDevicePointer(), prefixSums.getDevicePointer(), MaxNumElements);
+    if constexpr (opType == ScanOpType::ExclusiveSum)
+        cubd::DeviceScan::ExclusiveSum(
+            nullptr, tempStorageSize,
+            values.getDevicePointer(), scannedValues.getDevicePointer(), MaxNumElements);
+    else if constexpr (opType == ScanOpType::InclusiveSum)
+        cubd::DeviceScan::InclusiveSum(
+            nullptr, tempStorageSize,
+            values.getDevicePointer(), scannedValues.getDevicePointer(), MaxNumElements);
+    else if constexpr (opType == ScanOpType::ExclusiveMax)
+        cubd::DeviceScan::ExclusiveMax(
+            nullptr, tempStorageSize,
+            values.getDevicePointer(), scannedValues.getDevicePointer(), ValueType(0), MaxNumElements);
+    else if constexpr (opType == ScanOpType::InclusiveMax)
+        cubd::DeviceScan::InclusiveMax(
+            nullptr, tempStorageSize,
+            values.getDevicePointer(), scannedValues.getDevicePointer(), MaxNumElements);
 
     // JP: 作業バッファーの確保。
     // EN: allocate the working buffer.
     cudau::Buffer tempStorage;
     tempStorage.initialize(cuContext, bufferType, tempStorageSize, 1);
 
-    printf("DeviceScan::%s, %s:\n", inclusive ? "Inclusive" : "Exclusive", TypeTraits::s_keyword);
+    printf("DeviceScan::%s, %s:\n", scanOpKeywords[static_cast<uint32_t>(opType)], TypeTraits::s_keyword);
     bool allSuccess = true;
     for (int testIdx = 0; testIdx < NumTests; ++testIdx) {
         // JP: 値のセットとリファレンスとしての答えの計算。
         // EN: set values and calculate the reference answer.
+        ValueType initValue;
+        if constexpr (opType == ScanOpType::ExclusiveMax)
+            initValue = dist(rng);
+        else
+            (void)initValue;
         const uint32_t numElements = rng() % (MaxNumElements + 1);
-        SumValueType sum = 0;
         ValueType* valuesOnHost = values.map();
-        for (int i = 0; i < numElements; ++i) {
-            ValueType value = dist(rng);
-            valuesOnHost[i] = value;
-            if constexpr (inclusive)
-                sum += value;
-            refPrefixSums[i] = sum;
-            if constexpr (!inclusive)
-                sum += value;
+        if constexpr (opType == ScanOpType::ExclusiveSum ||
+                      opType == ScanOpType::InclusiveSum) {
+            SumValueType sum = 0;
+            for (int i = 0; i < numElements; ++i) {
+                ValueType value = dist(rng);
+                valuesOnHost[i] = value;
+                if constexpr (opType == ScanOpType::InclusiveSum)
+                    sum += value;
+                refScannedValues[i] = sum;
+                if constexpr (opType == ScanOpType::ExclusiveSum)
+                    sum += value;
+            }
+        }
+        else if constexpr (opType == ScanOpType::ExclusiveMax ||
+                           opType == ScanOpType::InclusiveMax) {
+            ValueType curValue;
+            if constexpr (opType == ScanOpType::ExclusiveMax)
+                curValue = initValue;
+            else
+                curValue = std::numeric_limits<ValueType>::lowest();
+            for (int i = 0; i < numElements; ++i) {
+                ValueType value = dist(rng);
+                valuesOnHost[i] = value;
+                if constexpr (opType == ScanOpType::InclusiveMax)
+                    curValue = std::max(curValue, value);
+                refScannedValues[i] = curValue;
+                if constexpr (opType == ScanOpType::ExclusiveMax)
+                    curValue = std::max(curValue, value);
+            }
         }
         values.unmap();
 
         // JP: スキャンの実行。
         // EN: perform scan.
-        if constexpr (inclusive)
-            cubd::DeviceScan::InclusiveSum(tempStorage.getDevicePointer(), tempStorageSize,
-                                           values.getDevicePointer(), prefixSums.getDevicePointer(), numElements,
-                                           cuStream);
-        else
-            cubd::DeviceScan::ExclusiveSum(tempStorage.getDevicePointer(), tempStorageSize,
-                                           values.getDevicePointer(), prefixSums.getDevicePointer(), numElements,
-                                           cuStream);
+        if constexpr (opType == ScanOpType::ExclusiveSum)
+            cubd::DeviceScan::ExclusiveSum(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                values.getDevicePointer(), scannedValues.getDevicePointer(), numElements,
+                cuStream);
+        else if constexpr (opType == ScanOpType::InclusiveSum)
+            cubd::DeviceScan::InclusiveSum(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                values.getDevicePointer(), scannedValues.getDevicePointer(), numElements,
+                cuStream);
+        else if constexpr (opType == ScanOpType::ExclusiveMax)
+            cubd::DeviceScan::ExclusiveMax(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                values.getDevicePointer(), scannedValues.getDevicePointer(), initValue, numElements,
+                cuStream);
+        else if constexpr (opType == ScanOpType::InclusiveMax)
+            cubd::DeviceScan::InclusiveMax(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                values.getDevicePointer(), scannedValues.getDevicePointer(), numElements,
+                cuStream);
 
         CUDADRV_CHECK(cuStreamSynchronize(cuStream));
 
-        ValueType* prefixSumsOnHost = prefixSums.map();
+        ValueType* scannedValuesOnHost = scannedValues.map();
         bool success = true;
         for (int i = 0; i < numElements; ++i) {
-            if constexpr (std::is_same<TypeTraits, Float32Traits>::value) {
-                ValueType error = (prefixSumsOnHost[i] - refPrefixSums[i]) / refPrefixSums[i];
-                if (refPrefixSums[i] != 0)
+            if constexpr (
+                std::is_same<TypeTraits, Float32Traits>::value &&
+                (opType == ScanOpType::ExclusiveSum | opType == ScanOpType::InclusiveSum)) {
+                ValueType error = (scannedValuesOnHost[i] - refScannedValues[i]) / refScannedValues[i];
+                if (refScannedValues[i] != 0)
                     success &= std::fabs(error) < 0.001f;
                 else
                     ;
             }
             else {
-                success &= prefixSumsOnHost[i] == refPrefixSums[i];
+                success &= scannedValuesOnHost[i] == refScannedValues[i];
             }
             if (!success)
                 break;
         }
-        prefixSums.unmap();
+        scannedValues.unmap();
 
         if constexpr (std::is_same<TypeTraits, Int32Traits>::value)
             printf("  N:%5u, value at the end: %8d (ref: %8d)%s\n", numElements,
-                   prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+                   scannedValuesOnHost[numElements - 1], refScannedValues[numElements - 1],
                    success ? "" : " NG");
         else if constexpr (std::is_same<TypeTraits, UInt32Traits>::value)
             printf("  N:%5u, value at the end: %8u (ref: %8u)%s\n", numElements,
-                   prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+                   scannedValuesOnHost[numElements - 1], refScannedValues[numElements - 1],
                    success ? "" : " NG");
         else if constexpr (std::is_same<TypeTraits, Float32Traits>::value)
             printf("  N:%5u, value at the end: %g (ref: %g)%s\n", numElements,
-                   prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+                   scannedValuesOnHost[numElements - 1], refScannedValues[numElements - 1],
                    success ? "" : " NG");
         else if constexpr (std::is_same<TypeTraits, Int64Traits>::value)
             printf("  N:%5u, value at the end: %16lld (ref: %16lld)%s\n", numElements,
-                   prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+                   scannedValuesOnHost[numElements - 1], refScannedValues[numElements - 1],
                    success ? "" : " NG");
         else if constexpr (std::is_same<TypeTraits, UInt64Traits>::value)
             printf("  N:%5u, value at the end: %16llu (ref: %16llu)%s\n", numElements,
-                   prefixSumsOnHost[numElements - 1], refPrefixSums[numElements - 1],
+                   scannedValuesOnHost[numElements - 1], refScannedValues[numElements - 1],
                    success ? "" : " NG");
 
         allSuccess &= success;
@@ -503,14 +600,15 @@ static bool test_DeviceScan(uint32_t MaxNumElements, typename TypeTraits::Type d
 
     tempStorage.finalize();
 
-    prefixSums.finalize();
+    scannedValues.finalize();
     values.finalize();
 
     return allSuccess;
 }
 
 template <typename TypeTraits, RadixSortOpType opType>
-static bool test_DeviceRadixSort(uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax) {
+static bool test_DeviceRadixSort(
+    uint32_t MaxNumElements, typename TypeTraits::Type distMin, typename TypeTraits::Type distMax) {
     using KeyType = typename TypeTraits::Type;
     using DistributionType = typename TypeTraits::DistributionType;
     using ValueType = uint32_t;
@@ -543,17 +641,21 @@ static bool test_DeviceRadixSort(uint32_t MaxNumElements, typename TypeTraits::T
     // EN: query the maximum size of working buffer.
     size_t tempStorageSize;
     if constexpr (opType == RadixSortOpType::SortKeys)
-        cubd::DeviceRadixSort::SortKeys(nullptr, tempStorageSize,
-                                        keys, MaxNumElements);
+        cubd::DeviceRadixSort::SortKeys(
+            nullptr, tempStorageSize,
+            keys, MaxNumElements);
     else if constexpr (opType == RadixSortOpType::SortKeysDescending)
-        cubd::DeviceRadixSort::SortKeysDescending(nullptr, tempStorageSize,
-                                                  keys, MaxNumElements);
+        cubd::DeviceRadixSort::SortKeysDescending(
+            nullptr, tempStorageSize,
+            keys, MaxNumElements);
     else if constexpr (opType == RadixSortOpType::SortPairs)
-        cubd::DeviceRadixSort::SortPairs(nullptr, tempStorageSize,
-                                         keys, values, MaxNumElements);
+        cubd::DeviceRadixSort::SortPairs(
+            nullptr, tempStorageSize,
+            keys, values, MaxNumElements);
     else if constexpr (opType == RadixSortOpType::SortPairsDescending)
-        cubd::DeviceRadixSort::SortPairsDescending(nullptr, tempStorageSize,
-                                                   keys, values, MaxNumElements);
+        cubd::DeviceRadixSort::SortPairsDescending(
+            nullptr, tempStorageSize,
+            keys, values, MaxNumElements);
 
     // JP: 作業バッファーの確保。
     // EN: allocate the working buffer.
@@ -596,21 +698,25 @@ static bool test_DeviceRadixSort(uint32_t MaxNumElements, typename TypeTraits::T
         // JP: ソートの実行。
         // EN: perform sort.
         if constexpr (opType == RadixSortOpType::SortKeys)
-            cubd::DeviceRadixSort::SortKeys(tempStorage.getDevicePointer(), tempStorageSize,
-                                            keys, numElements, 0, sizeof(KeyType) * 8,
-                                            cuStream);
+            cubd::DeviceRadixSort::SortKeys(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                keys, numElements, 0, sizeof(KeyType) * 8,
+                cuStream);
         else if constexpr (opType == RadixSortOpType::SortKeysDescending)
-            cubd::DeviceRadixSort::SortKeysDescending(tempStorage.getDevicePointer(), tempStorageSize,
-                                                      keys, numElements, 0, sizeof(KeyType) * 8,
-                                                      cuStream);
+            cubd::DeviceRadixSort::SortKeysDescending(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                keys, numElements, 0, sizeof(KeyType) * 8,
+                cuStream);
         else if constexpr (opType == RadixSortOpType::SortPairs)
-            cubd::DeviceRadixSort::SortPairs(tempStorage.getDevicePointer(), tempStorageSize,
-                                             keys, values, numElements, 0, sizeof(KeyType) * 8,
-                                             cuStream);
+            cubd::DeviceRadixSort::SortPairs(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                keys, values, numElements, 0, sizeof(KeyType) * 8,
+                cuStream);
         else if constexpr (opType == RadixSortOpType::SortPairsDescending)
-            cubd::DeviceRadixSort::SortPairsDescending(tempStorage.getDevicePointer(), tempStorageSize,
-                                                       keys, values, numElements, 0, sizeof(KeyType) * 8,
-                                                       cuStream);
+            cubd::DeviceRadixSort::SortPairsDescending(
+                tempStorage.getDevicePointer(), tempStorageSize,
+                keys, values, numElements, 0, sizeof(KeyType) * 8,
+                cuStream);
 
         CUDADRV_CHECK(cuStreamSynchronize(cuStream));
 

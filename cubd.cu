@@ -36,6 +36,13 @@ namespace cubd {
     template <typename CubdKeyValuePair>
     using CubKeyValuePairType = cub::KeyValuePair<typename CubdKeyValuePair::Key, typename CubdKeyValuePair::Value>;
 
+    struct GenericMax {
+        template <typename T>
+        __device__ __forceinline__ T operator()(const T &a, const T &b) const {
+            return a > b ? a : b;
+        }
+    };
+
 
 
     static inline CUresult cudaError_t_to_CUresult(cudaError_t cudaError) {
@@ -121,6 +128,24 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceScan::InclusiveSum(
             d_temp_storage, temp_storage_bytes,
             d_in, d_out, num_items,
+            stream, debug_synchronous);
+        return cudaError_t_to_CUresult(cudaError);
+    }
+
+    template <typename InputIteratorT, typename OutputIteratorT, typename InitValueT>
+    CUresult DEVICE_SCAN_EXCLUSIVE_MAX_SIGNATURE(InputIteratorT, OutputIteratorT, InitValueT) {
+        cudaError_t cudaError = cub::DeviceScan::ExclusiveScan(
+            d_temp_storage, temp_storage_bytes,
+            d_in, d_out, GenericMax(), init_value, num_items,
+            stream, debug_synchronous);
+        return cudaError_t_to_CUresult(cudaError);
+    }
+
+    template <typename InputIteratorT, typename OutputIteratorT>
+    CUresult DEVICE_SCAN_INCLUSIVE_MAX_SIGNATURE(InputIteratorT, OutputIteratorT) {
+        cudaError_t cudaError = cub::DeviceScan::InclusiveScan(
+            d_temp_storage, temp_storage_bytes,
+            d_in, d_out, GenericMax(), num_items,
             stream, debug_synchronous);
         return cudaError_t_to_CUresult(cudaError);
     }
