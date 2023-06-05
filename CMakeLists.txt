@@ -16,6 +16,11 @@ option(CUBD_BUILD_SAMPLES "Build sample projects for cubd." ON)
 option(CUBD_BUILD_DYNAMIC_LIB "Build dynamic-link cubd library." ON)
 option(CUBD_BUILD_STATIC_LIB "Build static-link cubd library." ON)
 
+set(CUBD_CPP_VER "c++20" CACHE STRING "C++ version the host code uses")
+set_property(
+    CACHE CUBD_CPP_VER PROPERTY STRINGS
+    "c++17" "c++20")
+
 add_library(cubd_fakelib INTERFACE)
 target_compile_definitions(
     cubd_fakelib INTERFACE
