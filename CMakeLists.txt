@@ -16,7 +16,8 @@ option(CUBD_BUILD_SAMPLES "Build sample projects for cubd." ON)
 option(CUBD_BUILD_DYNAMIC_LIB "Build dynamic-link cubd library." ON)
 option(CUBD_BUILD_STATIC_LIB "Build static-link cubd library." ON)
 
-set(CUBD_CPP_VER "c++20" CACHE STRING "C++ version the host code uses")
+# c++20 has a compilation issue with VS 2022 17.10.0 and CUDA 12.5.
+set(CUBD_CPP_VER "c++17" CACHE STRING "C++ version the host code uses")
 set_property(
     CACHE CUBD_CPP_VER PROPERTY STRINGS
     "c++17" "c++20")
@@ -31,8 +32,10 @@ target_compile_options(
     # if (compilerID == MSVC && compilerLanguage != CUDA) set(/MP);
     "$<$<AND:$<C_COMPILER_ID:MSVC>,$<NOT:$<COMPILE_LANGUAGE:CUDA>>>:/MP>"
     "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<NOT:$<COMPILE_LANGUAGE:CUDA>>>:/MP>"
-    # if (compilerID == MSVC && compilerLanguage == CUDA) set(-Xcompiler "/wd 4819");
-    "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=/wd4819>"
+    # if (compilerID == MSVC && compilerLanguage != CUDA) set(/Zc:__cplusplus);
+    "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<NOT:$<COMPILE_LANGUAGE:CUDA>>>:/Zc:__cplusplus>"
+    # if (compilerID == MSVC && compilerLanguage == CUDA) set(-Xcompiler "/wd 4819 /Zc:__cplusplus");
+    "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=/wd4819 /Zc:__cplusplus>"
 )
 
 if(CUBD_BUILD_DYNAMIC_LIB)

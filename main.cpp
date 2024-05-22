@@ -684,13 +684,13 @@ static bool test_DeviceRadixSort(
         if constexpr (hasValues)
             curValues.unmap();
         curKeys.unmap();
-        const auto compareFunc = (opType == RadixSortOpType::SortKeys ||
-                                  opType == RadixSortOpType::SortPairs) ?
-            [](const std::pair<KeyType, ValueType> &pairA, const std::pair<KeyType, ValueType> &pairB) {
-            return pairA.first < pairB.first;
-        } :
-            [](const std::pair<KeyType, ValueType> &pairA, const std::pair<KeyType, ValueType> &pairB) {
-            return pairA.first > pairB.first;
+        const auto compareFunc = []
+        (const std::pair<KeyType, ValueType> &pairA, const std::pair<KeyType, ValueType> &pairB) {
+            if constexpr (opType == RadixSortOpType::SortKeys ||
+                          opType == RadixSortOpType::SortPairs)
+                return pairA.first < pairB.first;
+            else
+                return pairA.first > pairB.first;
         };
         std::stable_sort(refKeyValuePairs.begin(), refKeyValuePairs.begin() + numElements,
                          compareFunc);
