@@ -1,6 +1,6 @@
 ﻿/*
 
-   Copyright 2022 Shin Watanabe
+   Copyright 2024 Shin Watanabe
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
 #include "cubd.h"
 
 #include <cuda_runtime.h>
-#include <iterator>
 
 #if !defined(__INTELLISENSE__)
 #include <cub/cub.cuh>
@@ -60,7 +59,7 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceReduce::Sum(
             d_temp_storage, temp_storage_bytes,
             d_in, d_out, num_items,
-            stream, debug_synchronous);
+            stream);
         return cudaError_t_to_CUresult(cudaError);
     }
 
@@ -69,7 +68,7 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceReduce::Min(
             d_temp_storage, temp_storage_bytes,
             d_in, d_out, num_items,
-            stream, debug_synchronous);
+            stream);
         return cudaError_t_to_CUresult(cudaError);
     }
 
@@ -84,7 +83,7 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceReduce::ArgMin(
             d_temp_storage, temp_storage_bytes,
             d_in, cub_d_out, num_items,
-            stream, debug_synchronous);
+            stream);
         return cudaError_t_to_CUresult(cudaError);
     }
 
@@ -93,7 +92,7 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceReduce::Max(
             d_temp_storage, temp_storage_bytes,
             d_in, d_out, num_items,
-            stream, debug_synchronous);
+            stream);
         return cudaError_t_to_CUresult(cudaError);
     }
 
@@ -108,7 +107,7 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceReduce::ArgMax(
             d_temp_storage, temp_storage_bytes,
             d_in, cub_d_out, num_items,
-            stream, debug_synchronous);
+            stream);
         return cudaError_t_to_CUresult(cudaError);
     }
 
@@ -119,7 +118,7 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceScan::ExclusiveSum(
             d_temp_storage, temp_storage_bytes,
             d_in, d_out, num_items,
-            stream, debug_synchronous);
+            stream);
         return cudaError_t_to_CUresult(cudaError);
     }
 
@@ -128,7 +127,7 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceScan::InclusiveSum(
             d_temp_storage, temp_storage_bytes,
             d_in, d_out, num_items,
-            stream, debug_synchronous);
+            stream);
         return cudaError_t_to_CUresult(cudaError);
     }
 
@@ -137,7 +136,7 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceScan::ExclusiveScan(
             d_temp_storage, temp_storage_bytes,
             d_in, d_out, GenericMax(), init_value, num_items,
-            stream, debug_synchronous);
+            stream);
         return cudaError_t_to_CUresult(cudaError);
     }
 
@@ -146,7 +145,7 @@ namespace cubd {
         cudaError_t cudaError = cub::DeviceScan::InclusiveScan(
             d_temp_storage, temp_storage_bytes,
             d_in, d_out, GenericMax(), num_items,
-            stream, debug_synchronous);
+            stream);
         return cudaError_t_to_CUresult(cudaError);
     }
 
@@ -164,7 +163,7 @@ namespace cubd {
             d_temp_storage, temp_storage_bytes,
             cub_d_keys, cub_d_values, num_items,
             begin_bit, end_bit,
-            stream, debug_synchronous);
+            stream);
         d_keys = reinterpret_cast<cubd::DoubleBuffer<KeyT> &>(cub_d_keys);
         d_values = reinterpret_cast<cubd::DoubleBuffer<ValueT> &>(cub_d_values);
         return cudaError_t_to_CUresult(cudaError);
@@ -182,7 +181,7 @@ namespace cubd {
             d_temp_storage, temp_storage_bytes,
             cub_d_keys, cub_d_values, num_items,
             begin_bit, end_bit,
-            stream, debug_synchronous);
+            stream);
         d_keys = reinterpret_cast<cubd::DoubleBuffer<KeyT> &>(cub_d_keys);
         d_values = reinterpret_cast<cubd::DoubleBuffer<ValueT> &>(cub_d_values);
         return cudaError_t_to_CUresult(cudaError);
@@ -198,7 +197,7 @@ namespace cubd {
             d_temp_storage, temp_storage_bytes,
             cub_d_keys, num_items,
             begin_bit, end_bit,
-            stream, debug_synchronous);
+            stream);
         d_keys = reinterpret_cast<cubd::DoubleBuffer<KeyT> &>(cub_d_keys);
         return cudaError_t_to_CUresult(cudaError);
     }
@@ -213,7 +212,7 @@ namespace cubd {
             d_temp_storage, temp_storage_bytes,
             cub_d_keys, num_items,
             begin_bit, end_bit,
-            stream, debug_synchronous);
+            stream);
         d_keys = reinterpret_cast<cubd::DoubleBuffer<KeyT> &>(cub_d_keys);
         return cudaError_t_to_CUresult(cudaError);
     }
