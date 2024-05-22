@@ -10,7 +10,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_RUNTIME_LIBRARY_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
-find_package(CUDAToolkit 11.6 REQUIRED)
+find_package(CUDAToolkit 12.0 REQUIRED)
 
 option(CUBD_BUILD_SAMPLES "Build sample projects for cubd." ON)
 option(CUBD_BUILD_DYNAMIC_LIB "Build dynamic-link cubd library." ON)
