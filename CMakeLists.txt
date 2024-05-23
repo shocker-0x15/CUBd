@@ -17,7 +17,7 @@ option(CUBD_BUILD_DYNAMIC_LIB "Build dynamic-link cubd library." ON)
 option(CUBD_BUILD_STATIC_LIB "Build static-link cubd library." ON)
 
 # c++20 has a compilation issue with VS 2022 17.10.0 and CUDA 12.5.
-set(CUBD_CPP_VER "c++17" CACHE STRING "C++ version the host code uses")
+set(CUBD_CPP_VER "c++20" CACHE STRING "C++ version the host code uses")
 set_property(
     CACHE CUBD_CPP_VER PROPERTY STRINGS
     "c++17" "c++20")

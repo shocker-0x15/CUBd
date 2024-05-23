@@ -55,15 +55,15 @@ However, it is easy to add a primitive which CUBd supports by writing explicit t
 現状以下の環境で動作を確認しています。\
 I've confirmed that the program runs correctly on the following environment.
 
-* Windows 11 (23H2) & Visual Studio 2022 (17.10.0)
+* Windows 11 (23H2) & Visual Studio 2022 (17.9.7)
 * Ryzen 9 7950X, 64GB, RTX 4080 16GB
 * NVIDIA Driver 555.85
 
 動作させるにあたっては以下のライブラリが必要です。\
 It requires the following libraries.
 
-* CUDA 12.5
-  (cubd might able to be built with bit older CUDA version 11.0-)
+* CUDA 12.5 (cubd might able to be built with bit older CUDA version 11.0-)\
+  Note that CUDA has compilation issues with Visual Studio 2022 17.10.0.
 
 ## ライセンス / License
 Released under the Apache License, Version 2.0 (See [LICENSE.md](LICENSE.md))
