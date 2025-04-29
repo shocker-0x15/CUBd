@@ -55,7 +55,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>libcubd_static</TargetName>
+    <TargetName>libcubd_staticd</TargetName>
     <IncludePath>C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
