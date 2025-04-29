@@ -4,7 +4,7 @@
 しかし欠点として、デバイス範囲のプリミティブを使用するためにCUBのヘッダーファイルをincludeすると、CUDA特有の予約語などがソースコードに含まれてしまうことがあります。
 これはCUBのヘッダーをincludeしたファイルはNVCC経由でコンパイルする必要があることを意味します。
 **CUBd**は、CUBのincludeを隠蔽することを目的にしたシンプルなライブラリ(の実装例)です。
-使用方法は下記コード例にも示すように、namespaceがcubからcubdに変わったこと以外オリジナルのCUBと全く同じになるようにしています。\
+使用方法は下記コード例にも示すように、namespaceがcubからcubdに変わったことを除き、オリジナルのCUBと全く同じにしています。\
 \
 [CUB](https://nvlabs.github.io/cub/) provides very useful parallel compute primitives like reduction and sort for CUDA GPGPU programming.
 However, it has a drawback that including CUB's header files to use device-wide primitives brings CUDA-specific reserved words into the source code.
@@ -55,18 +55,18 @@ However, it is easy to add a primitive which CUBd supports by writing explicit t
 現状以下の環境で動作を確認しています。\
 I've confirmed that the program runs correctly on the following environment.
 
-* Windows 11 (23H2) & Visual Studio 2022 (17.9.7)
+* Windows 11 (24H2) & Visual Studio 2022 (17.13.6)
 * Ryzen 9 7950X, 64GB, RTX 4080 16GB
-* NVIDIA Driver 555.85
+* NVIDIA Driver 576.02
 
 動作させるにあたっては以下のライブラリが必要です。\
 It requires the following libraries.
 
-* CUDA 12.5 (cubd might able to be built with bit older CUDA version 11.0-)\
+* CUDA 12.8.1 (cubd might also be built with bit older CUDA version 11.0-)\
   Note that CUDA has compilation issues with Visual Studio 2022 17.10.0.
 
 ## ライセンス / License
-Released under the Apache License, Version 2.0 (See [LICENSE.md](LICENSE.md))
+Released under the Apache License, Version 2.0 (see [LICENSE.md](LICENSE.md))
 
 ----
-2022 [@Shocker_0x15](https://twitter.com/Shocker_0x15)
+2025 [@Shocker_0x15](https://twitter.com/Shocker_0x15), [@bsky.rayspace.xyz](https://bsky.app/profile/bsky.rayspace.xyz)
