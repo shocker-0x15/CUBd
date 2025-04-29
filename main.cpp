@@ -12,20 +12,6 @@
 // JP: このファイルは通常のC++コードとしてコンパイルできる。
 // EN: This file can be compiled as an ordinary C++ code.
 
-#define CUDADRV_CHECK(call) \
-    do { \
-        CUresult error = call; \
-        if (error != CUDA_SUCCESS) { \
-            std::stringstream ss; \
-            const char* errMsg = "failed to get an error message."; \
-            cuGetErrorString(error, &errMsg); \
-            ss << "CUDA call (" << #call << " ) failed with error: '" \
-               << errMsg \
-               << "' (" __FILE__ << ":" << __LINE__ << ")\n"; \
-            throw std::runtime_error(ss.str().c_str()); \
-        } \
-    } while (0)
-
 
 
 template <typename RealType>

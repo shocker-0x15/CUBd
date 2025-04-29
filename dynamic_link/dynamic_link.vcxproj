@@ -52,6 +52,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>USE_CUBD_DLL;CUDA_UTIL_DONT_USE_GL_INTEROP;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -76,6 +77,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>USE_CUBD_DLL;CUDA_UTIL_DONT_USE_GL_INTEROP;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
